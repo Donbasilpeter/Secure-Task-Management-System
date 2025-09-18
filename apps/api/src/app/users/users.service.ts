@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../../../../../libs/data/src/entities/user.entity';
+import { User } from '@secure-task-management-system/data';
 import { UserDTO } from '@secure-task-management-system/data';
 
 @Injectable()
