@@ -34,13 +34,18 @@ describe('LandingPageComponent', () => {
   it('should display feature titles and descriptions correctly', () => {
     const featureEls = fixture.debugElement.queryAll(By.css('section > div'));
     featureEls.forEach((el, index) => {
-      const title = el.query(By.css('h2')).nativeElement.textContent.trim();
-      const description = el.query(By.css('p')).nativeElement.textContent.trim();
+      const titleEl = el.query(By.css('h3'));
+      const descEl = el.query(By.css('p'));
 
-      expect(title).toBe(component.appStore.features()[index].title);
-      expect(description).toBe(component.appStore.features()[index].description);
+      expect(titleEl?.nativeElement.textContent.trim())
+        .toBe(component.appStore.features()[index].title);
+
+      expect(descEl?.nativeElement.textContent.trim())
+        .toBe(component.appStore.features()[index].description);
     });
   });
+
+
 
   it('should have a "Get Started" button with routerLink="register"', () => {
     const link = fixture.debugElement.query(By.css('a[routerLink="register"]')).nativeElement;

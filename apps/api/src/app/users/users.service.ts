@@ -92,7 +92,10 @@ export class UsersService {
         email: dto.email,
         passwordHash,
       });
-      return await this.repo.save(user);
+      const savedUser = await this.repo.save(user);
+      delete savedUser.passwordHash; // remove sensitive field
+      return savedUser;
+
     } catch (err) {
       if (
         err instanceof BadRequestException ||
