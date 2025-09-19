@@ -8,7 +8,7 @@ type AppState = {
 export const AppStore = signalStore(
   { providedIn: 'root' },
   withState<AppState>({
-    appName: 'My Awesome App',
+    appName: 'Secure Task Manager',
     features: [
       {
         title: '✅ Task Management',

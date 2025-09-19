@@ -23,22 +23,22 @@ describe('LandingPageComponent', () => {
 
   it('should display the correct app name in header', () => {
     const header = fixture.debugElement.query(By.css('h1')).nativeElement;
-    expect(header.textContent).toContain('Secure Task Manager');
+    expect(header.textContent).toContain(component.appStore.appName());
   });
 
   it('should render all features', () => {
     const featureEls = fixture.debugElement.queryAll(By.css('section > div'));
-    expect(featureEls.length).toBe(component.features.length);
+    expect(featureEls.length).toBe(component.appStore.features().length);
   });
 
   it('should display feature titles and descriptions correctly', () => {
     const featureEls = fixture.debugElement.queryAll(By.css('section > div'));
     featureEls.forEach((el, index) => {
-      const title = el.query(By.css('h3')).nativeElement.textContent.trim();
+      const title = el.query(By.css('h2')).nativeElement.textContent.trim();
       const description = el.query(By.css('p')).nativeElement.textContent.trim();
 
-      expect(title).toBe(component.features[index].title);
-      expect(description).toBe(component.features[index].description);
+      expect(title).toBe(component.appStore.features()[index].title);
+      expect(description).toBe(component.appStore.features()[index].description);
     });
   });
 
@@ -54,6 +54,6 @@ describe('LandingPageComponent', () => {
 
   it('should render footer with app name and year', () => {
     const footer = fixture.debugElement.query(By.css('footer')).nativeElement.textContent;
-    expect(footer).toContain('© 2025 Secure Task Manager');
+    expect(footer).toContain(`© 2025 ${component.appStore.appName()}`);
   });
 });
