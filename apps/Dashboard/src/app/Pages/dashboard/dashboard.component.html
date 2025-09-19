@@ -57,37 +57,69 @@
       Organisations
     </h2>
     <button
-      (click)="createOrganisation()"
+      *ngIf="!showCreateForm"
+      (click)="showCreateForm = true"
       class="text-sm px-4 py-2 bg-primary text-secondary-light font-medium rounded-button shadow hover:bg-primary-dark transition"
     >
       + New Organisation
     </button>
   </div>
 
-  <!-- Org list -->
-<ul class="px-6 py-6 space-y-4">
-  <li
-    *ngFor="let org of organisationStore.organisations()"
-    class="p-4 bg-secondary rounded-lg shadow-sm flex items-center justify-between hover:bg-tertiary-light/5 transition"
-  >
-    <div>
-      <p class="font-medium text-primary text-base">{{ org.name }}</p>
-      <p class="text-xs text-tertiary-light mt-1">
-        Role: <span class="font-medium text-primary">{{ org.role || '—' }}</span> •
-        Created: {{ org.createdAt | date:'mediumDate' }}
-      </p>
-      <p class="text-xs text-tertiary-light mt-1">
-        Departments: 0 • Tasks: 0
-      </p>
-    </div>
-
-    <button
-      (click)="goToOrg(org.id)"
-      class="text-sm px-4 py-2 bg-primary text-secondary-light font-medium rounded-button shadow hover:bg-primary-dark transition"
+  <!-- New Organisation Form -->
+  <div *ngIf="showCreateForm" class="px-6 py-6 border-b border-tertiary/10 bg-secondary/30">
+    <form
+      [formGroup]="orgForm"
+      (ngSubmit)="onCreateOrganisation()"
+      class="flex flex-col sm:flex-row gap-4 items-center"
     >
-      Open
-    </button>
-  </li>
-</ul>
+      <input
+        formControlName="name"
+        type="text"
+        placeholder="Organisation name"
+        class="flex-1 px-4 py-3 border border-tertiary/20 rounded-button focus:outline-none focus:ring-2 focus:ring-primary"
+      />
 
+      <div class="flex gap-3">
+        <button
+          type="submit"
+          class="px-4 py-2 bg-primary text-secondary-light font-medium rounded-button shadow hover:bg-primary-dark transition"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          (click)="cancelCreateOrganisation()"
+          class="px-4 py-2 bg-tertiary-light/20 text-tertiary-dark font-medium rounded-button shadow hover:bg-tertiary-light/40 transition"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Org list -->
+  <ul class="px-6 py-6 space-y-4">
+    <li
+      *ngFor="let org of organisationStore.organisations()"
+      class="p-4 bg-secondary rounded-lg shadow-sm flex items-center justify-between hover:bg-tertiary-light/5 transition"
+    >
+      <div>
+        <p class="font-medium text-primary text-base">{{ org.name }}</p>
+        <p class="text-xs text-tertiary-light mt-1">
+          Role: <span class="font-medium text-primary">{{ org.role || '—' }}</span> •
+          Created: {{ org.createdAt | date:'mediumDate' }}
+        </p>
+        <p class="text-xs text-tertiary-light mt-1">
+          Departments: 0 • Tasks: 0
+        </p>
+      </div>
+
+      <button
+        (click)="goToOrg(org.id)"
+        class="text-sm px-4 py-2 bg-primary text-secondary-light font-medium rounded-button shadow hover:bg-primary-dark transition"
+      >
+        Open
+      </button>
+    </li>
+  </ul>
 </section>

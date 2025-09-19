@@ -49,7 +49,8 @@ async createOrganisation(dto: CreateOrganisationDto, userId: number) {
     });
     await this.orgUserRepo.save(orgUser);
 
-    return org;
+      
+    return {...org,role: 'owner'};
   } catch (err) {
     if (err instanceof ConflictException) {
       throw err;
