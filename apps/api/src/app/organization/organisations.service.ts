@@ -81,5 +81,24 @@ async findAllByUser(userId: number) {
   }
 }
 
+async findOneByUser(orgId: number, userId: number) {
+  const orgUser = await this.orgUserRepo.findOne({
+    where: { organisation: { id: orgId }, user: { id: userId } },
+    relations: ['organisation','organisation.departments'],
+  });
+
+  if (!orgUser) return null;
+
+  // return only the organisation info
+  return {
+    id: orgUser.organisation.id,
+    name: orgUser.organisation.name,
+    createdAt: orgUser.organisation.createdAt,
+    role: orgUser.role,
+    departmentsCount:  orgUser.organisation.departments.length
+  };
+}
+
+
 
 }
