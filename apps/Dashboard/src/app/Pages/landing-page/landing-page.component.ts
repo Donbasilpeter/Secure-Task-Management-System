@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component,inject } from '@angular/core';
 import { CommonModule } from '@angular/common';  
 import { RouterModule } from '@angular/router';
+import { AppStore } from '../../Stores/app.store';
 
 @Component({
   selector: 'app-landing-page',
@@ -8,22 +9,7 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule,RouterModule],   
   templateUrl: './landing-page.component.html',
 })
+
 export class LandingPageComponent {
-  appName = 'Secure Task Manager';
-
-  features = [
-    {
-      title: '✅ Task Management',
-      description: 'Create, assign, and track tasks easily with role-based access.'
-    },
-    {
-      title: '👥 Team Collaboration',
-      description: 'Work seamlessly with Owners, Admins, and Viewers in departments.'
-    },
-    {
-      title: '🔒 Secure Access',
-      description: 'Fine-grained permissions ensure only the right people can edit.'
-    }
-  ];
-
+  appStore = inject(AppStore); // ✅ correct way
 }

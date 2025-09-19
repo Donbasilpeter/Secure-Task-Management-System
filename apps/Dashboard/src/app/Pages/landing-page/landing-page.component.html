@@ -3,7 +3,7 @@
   <!-- Header -->
   <header class="mb-16 max-w-3xl text-center">
     <h1 class="text-5xl font-heading font-extrabold text-primary tracking-tight">
-      Welcome to {{ appName }}
+      Welcome to {{ appStore.appName() }}
     </h1>
     <p class="text-lg text-gray-600 mt-6 leading-relaxed">
       Organize tasks, manage teams, and boost your productivity with ease.
@@ -34,7 +34,7 @@
     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-16 w-full max-w-6xl text-center"
   >
     <div
-      *ngFor="let feature of features"
+      *ngFor="let feature of  appStore.features()"
       class="bg-white p-8 rounded-card border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transform transition duration-300"
     >
       <div class="flex items-center justify-center w-12 h-12 mb-4 bg-primary/10 text-primary rounded-full mx-auto">
@@ -52,6 +52,6 @@
 
   <!-- Footer -->
   <footer class="text-sm text-gray-500 border-t border-gray-200 pt-6 mt-8 w-full text-center">
-    © 2025 {{ appName }} • Built with Angular + Nx + TailwindCSS
+    © 2025 {{ appStore.appName() }} • Built with Angular + Nx + TailwindCSS
   </footer>
 </div>
