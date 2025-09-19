@@ -1,9 +1,11 @@
 <div class="min-h-screen flex items-center justify-center bg-secondary font-body">
   <div class="w-full max-w-md bg-secondary-light rounded-card shadow-card p-8">
+    <!-- Header -->
     <h2 class="text-3xl font-heading font-bold text-center text-primary mb-6">
       Create an Account
     </h2>
 
+    <!-- Form -->
     <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="space-y-6">
       <!-- Name -->
       <div class="text-left">
@@ -11,8 +13,13 @@
         <input
           type="text"
           formControlName="name"
-          class="w-full px-4 py-3 border border-tertiary-light/20 rounded-button focus:outline-none focus:ring-2 focus:ring-primary"
+          class="w-full px-4 py-3 border border-tertiary-light/20 rounded-button 
+                 focus:outline-none focus:ring-2 focus:ring-primary"
         />
+        <p *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.invalid" 
+           class="text-xs text-accent-rose mt-1">
+          Name must be at least 2 characters.
+        </p>
       </div>
 
       <!-- Email -->
@@ -21,8 +28,13 @@
         <input
           type="email"
           formControlName="email"
-          class="w-full px-4 py-3 border border-tertiary-light/20 rounded-button focus:outline-none focus:ring-2 focus:ring-primary"
+          class="w-full px-4 py-3 border border-tertiary-light/20 rounded-button 
+                 focus:outline-none focus:ring-2 focus:ring-primary"
         />
+        <p *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" 
+           class="text-xs text-accent-rose mt-1">
+          Please enter a valid email address.
+        </p>
       </div>
 
       <!-- Password -->
@@ -31,29 +43,43 @@
         <input
           type="password"
           formControlName="password"
-          class="w-full px-4 py-3 border border-tertiary-light/20 rounded-button focus:outline-none focus:ring-2 focus:ring-primary"
+          class="w-full px-4 py-3 border border-tertiary-light/20 rounded-button 
+                 focus:outline-none focus:ring-2 focus:ring-primary"
         />
+        <p *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" 
+           class="text-xs text-accent-rose mt-1">
+          Password must be at least 6 characters.
+        </p>
       </div>
 
       <!-- Error Message -->
-      <p *ngIf="errorMessage" class="text-sm text-accent-rose">{{ errorMessage }}</p>
+      <p *ngIf="errorMessage" class="text-sm text-accent-rose">
+        {{ errorMessage }}
+      </p>
+
+      <!-- Success Message -->
+      <p *ngIf="successMessage" class="text-sm text-green-600">
+        {{ successMessage }}
+      </p>
 
       <!-- Submit -->
       <button
         type="submit"
         [disabled]="isLoading"
-        class="w-full py-3 bg-primary text-secondary-light font-medium rounded-button shadow hover:bg-primary-dark transition"
+        class="w-full py-3 bg-primary text-secondary-light font-medium rounded-button 
+               shadow hover:bg-primary-dark transition disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {{ isLoading ? 'Registering...' : 'Register' }}
       </button>
     </form>
 
     <!-- Link to Login -->
-     
     <div class="text-center mt-6 text-sm text-tertiary-light/70">
       <p>
         Already have an account?
-        <a routerLink="/login" class="text-primary font-semibold hover:underline">Login</a>
+        <a routerLink="/login" class="text-primary font-semibold hover:underline">
+          Login
+        </a>
       </p>
     </div>
   </div>

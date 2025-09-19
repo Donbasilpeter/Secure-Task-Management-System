@@ -45,8 +45,6 @@ describe('LandingPageComponent', () => {
     });
   });
 
-
-
   it('should have a "Get Started" button with routerLink="register"', () => {
     const link = fixture.debugElement.query(By.css('a[routerLink="register"]')).nativeElement;
     expect(link.textContent).toContain('Get Started');
