@@ -64,7 +64,7 @@ async findAllByUser(userId: number) {
     // Load all organisations linked to this user
     const orgUsers = await this.orgUserRepo.find({
       where: { user: { id: userId } },
-      relations: ['organisation'],
+      relations:['organisation', 'organisation.departments']
     });
 
     // Map to just organisation info
@@ -73,6 +73,7 @@ async findAllByUser(userId: number) {
       name: ou.organisation.name,
       createdAt: ou.organisation.createdAt,
       role: ou.role,
+      departmentsCount: ou.organisation.departments.length
     }));
   } catch (err) {
     console.error('Failed to fetch organisations:', err);

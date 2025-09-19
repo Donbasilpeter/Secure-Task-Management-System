@@ -5,6 +5,7 @@ export interface Organisation {
   name: string;
   createdAt?: string;
   role?: string;
+  departmentsCount?:number
 }
 
 @Injectable({ providedIn: 'root' })
