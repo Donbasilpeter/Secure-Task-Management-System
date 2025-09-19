@@ -3,8 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from '../../../../libs/data/src/entities/user.entity';
-
+import { User,Organisation,OrganisationUser } from '@secure-task-management-system/data';
+import { OrganisationsModule } from './organization/organisations.module';
+import { JwtStrategy } from '@secure-task-management-system/auth'; 
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -17,12 +18,13 @@ import { UsersModule } from './users/users.module';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASS || 'postgres',
       database: process.env.DB_NAME || 'appdb',
-      entities: [User],
+      entities: [User,Organisation,OrganisationUser],
       synchronize: true, 
     }),
-    UsersModule
+    UsersModule,
+    OrganisationsModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,JwtStrategy],
 })
 export class AppModule {}

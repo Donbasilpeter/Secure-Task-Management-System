@@ -11,5 +11,5 @@ import { AppStore } from '../../Stores/app.store';
 })
 
 export class LandingPageComponent {
-  appStore = inject(AppStore); // ✅ correct way
+  appStore = inject(AppStore); // correct way
 }

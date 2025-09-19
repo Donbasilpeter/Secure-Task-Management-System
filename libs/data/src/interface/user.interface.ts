@@ -1,7 +1,7 @@
 export interface UserDTO {
-  id: string;
+  id: number;
+  name: string;
   email: string;
-  role: string;
 }
 
 export interface LoginResponse {
