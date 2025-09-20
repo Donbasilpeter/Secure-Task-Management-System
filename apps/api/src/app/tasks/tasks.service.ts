@@ -90,7 +90,7 @@ async findTasksByDepartment(deptId: number, userId: number): Promise<Task[]> {
       where: { id: taskId },
       relations: ['department', 'department.organisation'],
     });
-
+    
     if (!task) throw new NotFoundException('Task not found');
 
     // Check if user is org owner
