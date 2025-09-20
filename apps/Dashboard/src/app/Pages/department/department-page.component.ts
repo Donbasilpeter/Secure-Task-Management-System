@@ -21,15 +21,15 @@ export class DepartmentPageComponent implements OnInit {
 
   departmentStore = inject(DepartmentStore);
   authStore = inject(AuthStore);
-  showUserModal = false;
-showTaskModal = false;
 
+  showUserModal = false;
+  showTaskModal = false;
 
   deptId!: number;
   department: Department | undefined;
   tasks: any[] = [];
 
-  // add user form
+  // Add user form
   addUserForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     role: ['viewer', Validators.required],
@@ -45,6 +45,7 @@ showTaskModal = false;
     this.deptId = Number(this.route.snapshot.paramMap.get('id'));
     this.fetchDepartment(this.deptId);
     this.fetchTasks(this.deptId);
+    this.fetchUsers(this.deptId); // 🔹 fetch department users
   }
 
   // Fetch single department
@@ -83,6 +84,21 @@ showTaskModal = false;
       });
   }
 
+  // 🔹 Fetch users
+  fetchUsers(id: number) {
+    const token = this.authStore.token();
+    if (!token) return;
+
+    this.http
+      .get<any[]>(`${environment.apiUrl}/departments/${id}/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe({
+        next: (res) => this.departmentStore.setUsers(res),
+        error: (err) => console.error('Failed to fetch users:', err),
+      });
+  }
+
   // Add user
   onAddUser() {
     if (!this.department || this.addUserForm.invalid) return;
@@ -93,7 +109,6 @@ showTaskModal = false;
     const payload = {
       email: this.addUserForm.value.email,
       role: this.addUserForm.value.role,
-      departmentId: this.department.id,
     };
 
     this.http
@@ -103,8 +118,9 @@ showTaskModal = false;
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .subscribe({
-        next: () => {
+        next: (user) => {
           alert('User added successfully');
+          this.departmentStore.addUser(user); // update store
           this.addUserForm.reset({ role: 'viewer' });
         },
         error: (err) => console.error('Failed to add user:', err),

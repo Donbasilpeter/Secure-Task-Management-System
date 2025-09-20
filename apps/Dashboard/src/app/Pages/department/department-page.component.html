@@ -84,6 +84,30 @@
     <button (click)="showUserModal = false" 
             class="absolute top-3 right-3 text-gray-400 hover:text-tertiary">✕</button>
     <h2 class="text-xl font-heading font-semibold text-primary mb-4">Manage Users</h2>
+
+    <!-- 🔹 Users List -->
+<!-- 🔹 Users List -->
+<div *ngIf="departmentStore.users().length > 0; else noUsers" class="mb-6">
+  <ul class="divide-y divide-gray-200 border rounded-card bg-secondary-dark 
+             max-h-64 overflow-y-auto">
+    <li *ngFor="let u of departmentStore.users()" 
+        class="flex justify-between items-center px-4 py-3">
+      <div>
+        <p class="font-medium text-tertiary">{{ u.name || u.email }}</p>
+        <p class="text-xs text-gray-500">{{ u.role }}</p>
+      </div>
+
+    </li>
+  </ul>
+</div>
+
+    <ng-template #noUsers>
+      <div class="p-4 text-center text-gray-500 bg-secondary rounded-card border">
+        No users found in this department.
+      </div>
+    </ng-template>
+
+    <!-- 🔹 Add User Form -->
     <form [formGroup]="addUserForm" (ngSubmit)="onAddUser()" class="space-y-4">
       <div>
         <label class="block text-sm font-medium text-tertiary mb-1">User Email</label>
@@ -109,6 +133,7 @@
     </form>
   </div>
 </div>
+
 
 <!-- 🔹 Create Task Modal -->
 <div *ngIf="showTaskModal" class="fixed inset-0 bg-tertiary/70 flex items-center justify-center z-50 overflow-hidden">
