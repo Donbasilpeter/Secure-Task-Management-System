@@ -7,6 +7,7 @@ import {
   Request,
   Get,
   Param,
+  Delete
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from '@secure-task-management-system/data';
@@ -28,6 +29,11 @@ export class TasksController {
   async getByDepartment(@Param('id') deptId: number, @Request() req) {
     const userId = req.user.id;
     return this.tasksService.findTasksByDepartment(deptId, userId);
+  }
+  @Delete(':id')
+  async deleteTask(@Param('id') id: number, @Request() req) {
+    const userId = req.user.id;
+    return this.tasksService.deleteTask(id, userId);
   }
 }
 

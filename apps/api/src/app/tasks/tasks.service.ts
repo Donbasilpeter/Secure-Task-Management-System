@@ -85,4 +85,31 @@ async findTasksByDepartment(deptId: number, userId: number): Promise<Task[]> {
   });
 }
 
+  async deleteTask(taskId: number, userId: number) {
+    const task = await this.taskRepo.findOne({
+      where: { id: taskId },
+      relations: ['department', 'department.organisation'],
+    });
+
+    if (!task) throw new NotFoundException('Task not found');
+
+    // Check if user is org owner
+    const orgUser = await this.orgUserRepo.findOne({
+      where: { organisation: { id: task.department.organisation.id }, user: { id: userId } },
+    });
+
+    const deptUser = await this.deptUserRepo.findOne({
+      where: { department: { id: task.department.id }, user: { id: userId } },
+    });
+
+    const isOwner = orgUser?.role === 'owner';
+    const isDeptAdmin = deptUser?.role === 'admin';
+
+    if (!isOwner && !isDeptAdmin) {
+      throw new ForbiddenException('Only owners or department admins can delete tasks');
+    }
+
+    await this.taskRepo.remove(task);
+    return { message: 'Task deleted successfully' };
+  }
 }

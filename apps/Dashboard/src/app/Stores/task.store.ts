@@ -37,4 +37,8 @@ export class TaskStore {
     this._tasks.set([]);
     this._currentTask.set(null);
   }
+  removeTask(id: number) {
+  this._tasks.update(tasks => tasks.filter(t => t.id !== id));
+}
+
 }

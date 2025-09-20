@@ -47,19 +47,37 @@
 
         <ng-container *ngIf="taskStore.tasks().length > 0; else noTasks">
           <ul class="space-y-4">
-            <li *ngFor="let task of taskStore.tasks()"
-                (click)="onOpenTask(task)"
-                class="p-5 border rounded-card shadow-card bg-secondary hover:bg-secondary-dark transition cursor-pointer">
-              <div class="flex justify-between items-center mb-2">
-                <h3 class="font-heading font-semibold text-lg text-tertiary">{{ task.title }}</h3>
-                <span class="text-xs text-gray-500">{{ task.createdAt | date:'medium' }}</span>
-              </div>
-              <p class="text-gray-700 mb-2">{{ task.description }}</p>
-              <p class="text-sm text-gray-500">
-                <span class="font-medium">Created by:</span> {{ task.createdBy?.name || 'Unknown' }} |
-                <span class="font-medium">Assigned to:</span> {{ task.assignedTo?.name || 'Unassigned' }}
-              </p>
-            </li>
+<li *ngFor="let task of taskStore.tasks()"
+    class="p-5 border rounded-card shadow-card bg-secondary hover:bg-secondary-dark transition">
+
+  <div class="flex justify-between items-center mb-2">
+    <h3 class="font-heading font-semibold text-lg text-tertiary">
+      {{ task.title }}
+    </h3>
+    <span class="text-xs text-gray-500">{{ task.createdAt | date:'medium' }}</span>
+  </div>
+
+  <p class="text-gray-700 mb-2">{{ task.description }}</p>
+  <p class="text-sm text-gray-500">
+    <span class="font-medium">Created by:</span> {{ task.createdBy?.name || 'Unknown' }} |
+    <span class="font-medium">Assigned to:</span> {{ task.assignedTo?.name || 'Unassigned' }}
+  </p>
+
+  <!-- 🔹 Actions -->
+  <div class="flex justify-end gap-3 mt-3">
+    <button (click)="onOpenTask(task)"
+            class="px-4 py-1 bg-primary text-white text-sm rounded-button shadow hover:bg-primary-dark">
+      View
+    </button>
+
+    <button *ngIf="department?.role === 'admin' || department?.role === 'owner'"
+            (click)="onDeleteTask(task)"
+            class="px-4 py-1 bg-red-600 text-white text-sm rounded-button shadow hover:bg-red-700">
+      Delete
+    </button>
+  </div>
+</li>
+
           </ul>
         </ng-container>
 

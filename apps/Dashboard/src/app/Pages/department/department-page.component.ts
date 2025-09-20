@@ -212,4 +212,27 @@ export class DepartmentPageComponent implements OnInit {
         error: (err) => console.error('Failed to add comment:', err),
       });
   }
+  // Delete task
+onDeleteTask(task: any) {
+  if (!confirm(`Are you sure you want to delete "${task.title}"?`)) return;
+
+  const token = this.authStore.token();
+  if (!token) return;
+
+  this.http
+    .delete<{ message: string }>(`${environment.apiUrl}/tasks/${task.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .subscribe({
+      next: () => {
+        this.taskStore.removeTask(task.id); // update store
+        alert('Task deleted successfully');
+      },
+      error: (err) => {
+        console.error('Failed to delete task:', err);
+        alert('You are not allowed to delete this task.');
+      },
+    });
+}
+
 }
