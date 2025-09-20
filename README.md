@@ -113,7 +113,6 @@ docker-compose up -d
 - **Postgres** → Runs on `localhost:5432`  
 - **pgAdmin** → Access via [http://localhost:5050](http://localhost:5050)  
   - Default login: `admin@admin.com / admin`  
-  - Add a new server using `postgres` as the host.  
 
 ---
 
