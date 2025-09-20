@@ -71,9 +71,81 @@ The system uses **JWT (JSON Web Tokens)** for authentication.
 
 ---
 
-## 📡 API Endpoints
 
+## 📡 API Documentation
 
+### 🔐 Authentication
+
+**Login**  
+`POST http://localhost:3000/api/users/login`  
+
+**Request**
+```json
+{
+  "email": "donbasilpeter@gmail.com",
+  "password": "1234567"
+}
+```
+
+**Response**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "name": "don",
+    "email": "donbasilpeter@gmail.com"
+  }
+}
+```
+
+---
+
+### 🏢 Organisations
+
+**Create Organisation**  
+`POST http://localhost:3000/api/organisations`  
+
+**Request**
+```json
+{
+  "name": "My First Organisdation"
+}
+```
+
+**Response**
+```json
+{
+  "name": "My First Organisdation",
+  "id": 10,
+  "createdAt": "2025-09-21T03:47:43.761Z",
+  "role": "owner"
+}
+```
+
+---
+
+### 🗂 Departments
+
+**Create Department**  
+`POST http://localhost:3000/api/departments`  
+
+**Request**
+```json
+{
+  "name": "EngineerifdghDng",
+  "organisationId": 1
+}
+```
+
+**Response (Error if user is not part of organisation)**
+```json
+{
+  "message": "User is not part of this organisation",
+  "error": "Not Found",
+  "statusCode": 404
+}
+```
 
 ---
 
