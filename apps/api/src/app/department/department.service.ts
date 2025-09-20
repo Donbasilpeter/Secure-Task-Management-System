@@ -72,25 +72,32 @@ export class DepartmentsService {
       role: 'owner', // creator is always owner
     };
   }
+
 async findByIdForUser(deptId: number, userId: number) {
   const dept = await this.deptRepo.findOne({
     where: { id: deptId },
-    relations: ['organisation'], // only what exists on Department
+    relations: ['organisation'],
   });
 
-  if (!dept) throw new NotFoundException('Department not found');
+  if (!dept) {
+    throw new NotFoundException('Department not found');
+  }
 
-  // Get the department-user join for current user
+  // Check membership
   const deptUser = await this.deptUserRepo.findOne({
     where: { department: { id: deptId }, user: { id: userId } },
     relations: ['user'],
   });
 
+  if (!deptUser) {
+    throw new ForbiddenException('You are not a member of this department');
+  }
+
   return {
     id: dept.id,
     name: dept.name,
     organisationId: dept.organisation.id,
-    role: deptUser?.role || 'viewer', // fallback
+    role: deptUser.role,
   };
 }
 
@@ -106,16 +113,18 @@ async getDepartmentsByOrganisation(orgId: number, userId: number) {
     );
   }
 
-  // 2. Get all departments under this organisation with departmentUsers
+  // 2. Get only departments where this user is a member
   const departments = await this.deptRepo.find({
-    where: { organisation: { id: orgId } },
+    where: {
+      organisation: { id: orgId },
+      departmentUsers: { user: { id: userId } }, // ✅ restrict to departments with this user
+    },
     relations: ['departmentUsers', 'departmentUsers.user'],
-    order: { name : 'ASC' },
+    order: { name: 'ASC' },
   });
 
   // 3. Map to simplified response
   return departments.map((dept) => {
-    // Find current user's role in this department
     const membership = dept.departmentUsers.find(
       (du) => du.user.id === userId,
     );
@@ -123,8 +132,8 @@ async getDepartmentsByOrganisation(orgId: number, userId: number) {
     return {
       id: dept.id,
       name: dept.name,
-      organisationId: orgId,  //include organisationId
-      role: membership ? membership.role : 'viewer', // default to viewer if no explicit role
+      organisationId: orgId,
+      role: membership ? membership.role : 'viewer', // should always exist now
     };
   });
 }
@@ -194,6 +203,7 @@ async addUserToDepartment(
     user: targetUser,
     role,
   });
+  await this.deptUserRepo.save(newDeptUser);
    return { message: 'User added to department successfully' };
 }
 

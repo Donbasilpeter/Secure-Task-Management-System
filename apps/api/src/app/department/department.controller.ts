@@ -37,9 +37,10 @@ export class DepartmentsController {
 @UseGuards(AuthGuard('jwt'))
 @Get('/:id/dpt')
 async getDepartment(@Param('id') id: number, @Request() req) {
-  const userId = req.user.id; // JWT payload: { sub: userId }
-  return this.departmentsService.findByIdForUser(id, userId);
+  const userId = req.user.id; // make sure JwtStrategy maps sub -> id
+  return this.departmentsService.findByIdForUser(Number(id), userId);
 }
+
 
   // Add a user to department (only org owner or dept admin can do this)
   @UseGuards(AuthGuard('jwt'))
