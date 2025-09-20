@@ -39,6 +39,7 @@ export class DepartmentPageComponent implements OnInit {
   taskForm = this.fb.group({
     title: ['', Validators.required],
     description: [''],
+    assignedToId: [this.authStore.user()?.id || null, Validators.required], // default self
   });
 
   ngOnInit() {
@@ -138,6 +139,7 @@ export class DepartmentPageComponent implements OnInit {
       title: this.taskForm.value.title,
       description: this.taskForm.value.description,
       departmentId: this.department.id,
+      assignedToId: this.taskForm.value.assignedToId, // 🔹 new field
     };
 
     this.http
@@ -147,7 +149,9 @@ export class DepartmentPageComponent implements OnInit {
       .subscribe({
         next: (task) => {
           this.tasks.unshift(task);
-          this.taskForm.reset();
+          this.taskForm.reset({
+            assignedToId: this.authStore.user()?.id, // reset to self
+          });
         },
         error: (err) => console.error('Failed to create task:', err),
       });
