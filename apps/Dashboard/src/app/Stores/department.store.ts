@@ -10,10 +10,12 @@ export interface Department {
 @Injectable({ providedIn: 'root' })
 export class DepartmentStore {
   private _departments = signal<Department[]>([]);
+  private _currentDepartment = signal<Department | null>(null); 
 
   // 🔹 Public readonly signals
   readonly departments = this._departments.asReadonly();
   readonly count = computed(() => this._departments().length);
+  readonly currentDepartment = this._currentDepartment.asReadonly(); // expose current dept
 
   // 🔹 Mutators
   setDepartments(depts: Department[]) {
@@ -26,5 +28,11 @@ export class DepartmentStore {
 
   clear() {
     this._departments.set([]);
+    this._currentDepartment.set(null);
+  }
+
+  // 🔹 Set / clear current department
+  setCurrentDepartment(dept: Department | null) {
+    this._currentDepartment.set(dept);
   }
 }

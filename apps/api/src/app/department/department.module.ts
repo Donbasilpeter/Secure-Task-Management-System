@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Department } from '@secure-task-management-system/data'
-import { DepartmentUser } from '@secure-task-management-system/data'
-import { OrganisationUser } from '@secure-task-management-system/data'
+import { Department, OrganisationUser, DepartmentUser, User } from '@secure-task-management-system/data';
+
 import { DepartmentsService } from './department.service';
 import { DepartmentsController } from './department.controller';
 
@@ -12,6 +11,7 @@ import { DepartmentsController } from './department.controller';
       Department,
       DepartmentUser,
       OrganisationUser, 
+       User,
     ]),
   ],
   providers: [DepartmentsService],

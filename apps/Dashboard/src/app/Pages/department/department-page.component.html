@@ -1,0 +1,57 @@
+<app-header title="Department"></app-header>
+
+<div class="min-h-screen bg-secondary/5 font-body p-8">
+  <div class="max-w-4xl mx-auto bg-white rounded-card shadow-lg p-8 border border-tertiary/10">
+    <ng-container *ngIf="department; else notFound">
+      <h1 class="text-3xl font-heading font-bold text-primary mb-4">
+        {{ department.name }}
+      </h1>
+      <p class="text-gray-600 mb-2">
+        <span class="font-medium">Role:</span> {{ department.role }}
+      </p>
+      <p class="text-gray-600 mb-6">
+        <span class="font-medium">Department ID:</span> {{ department.id }}
+      </p>
+
+      <!-- Add User Form -->
+      <form [formGroup]="addUserForm" (ngSubmit)="onAddUser()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            User Email
+          </label>
+          <input
+            type="email"
+            formControlName="email"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-primary"
+            placeholder="Enter user email"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Role
+          </label>
+          <select
+            formControlName="role"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-primary"
+          >
+            <option value="viewer">Viewer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          class="px-4 py-2 bg-primary text-white rounded-md shadow hover:bg-primary-dark transition"
+          [disabled]="addUserForm.invalid"
+        >
+          Add User
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-template #notFound>
+      <p class="text-center text-gray-500">Department not found.</p>
+    </ng-template>
+  </div>
+</div>

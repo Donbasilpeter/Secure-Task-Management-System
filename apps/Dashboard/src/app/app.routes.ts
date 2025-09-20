@@ -5,6 +5,7 @@ import { RegisterPageComponent } from './Pages/register/register-page.component'
 import { DashboardPageComponent } from './Pages/dashboard/dashbaord.component';
 import { AuthGuard } from '../app/Guards/auth.guard'; 
 import { OrganisationPageComponent } from './Pages/organisations/organisaton.component';
+import { DepartmentPageComponent } from './Pages/department/department-page.component';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent },   // default landing page
@@ -13,4 +14,5 @@ export const appRoutes: Routes = [
   { path: 'register', component: RegisterPageComponent },
   { path: 'dashboard', component: DashboardPageComponent, canActivate: [AuthGuard] }, 
     { path: 'organisations/:id', component: OrganisationPageComponent },
+      { path: 'departments/:id', component: DepartmentPageComponent },
 ];

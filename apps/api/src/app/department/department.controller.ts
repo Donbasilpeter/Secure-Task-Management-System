@@ -5,7 +5,7 @@ import {
   Body,
   UseGuards,
   Request,
-    Param,
+  Param,
 } from '@nestjs/common';
 import { DepartmentsService } from './department.service';
 import { CreateDepartmentDto } from '@secure-task-management-system/data';
@@ -22,8 +22,8 @@ export class DepartmentsController {
     const userId = req.user.id; // comes from JWT payload
     return this.departmentsService.createDepartment(dto, userId);
   }
-  
-   // Get all departments of an organisation
+
+  // Get all departments of an organisation
   @UseGuards(AuthGuard('jwt'))
   @Get('/:orgId')
   findByOrganisation(@Param('orgId') orgId: number, @Request() req: any) {
@@ -34,4 +34,27 @@ export class DepartmentsController {
     );
   }
 
+@UseGuards(AuthGuard('jwt'))
+@Get('/:id/dpt')
+async getDepartment(@Param('id') id: number, @Request() req) {
+  const userId = req.user.id; // JWT payload: { sub: userId }
+  return this.departmentsService.findByIdForUser(id, userId);
+}
+
+  // Add a user to department (only org owner or dept admin can do this)
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/:deptId/users')
+  async addUserToDepartment(
+    @Param('deptId') deptId: number,
+    @Body() body: { email: string; role: 'admin' | 'viewer' },
+    @Request() req: any,
+  ) {
+    const userId = req.user.id;
+    return this.departmentsService.addUserToDepartment(
+      Number(deptId),
+      body.email,
+      body.role,
+      userId,
+    );
+  }
 }

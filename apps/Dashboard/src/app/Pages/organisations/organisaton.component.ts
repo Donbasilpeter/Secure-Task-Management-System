@@ -1,23 +1,25 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { OrganisationStore } from '../../Stores/organisation.store';
 import { AuthStore } from '../../Stores/auth.store';
-import { DepartmentStore } from '../../Stores/department.store';
+import { DepartmentStore,Department } from '../../Stores/department.store';
 import { environment } from '../../../environments/environment.';
 import { HeaderComponent } from '../header/header.component';
+import { RouterModule } from '@angular/router'; 
 
 
 @Component({
   selector: 'app-organisation',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ReactiveFormsModule,HeaderComponent],
+  imports: [CommonModule, HttpClientModule, ReactiveFormsModule,HeaderComponent,RouterModule],
   templateUrl: './organisation.component.html',
 })
 export class OrganisationPageComponent implements OnInit {
-  private route = inject(ActivatedRoute);
+  private router = inject(Router);      
+  private route = inject(ActivatedRoute);  
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
 
@@ -44,6 +46,12 @@ export class OrganisationPageComponent implements OnInit {
       this.loadDepartments(id);
     }
   }
+  // organisation.component.ts
+openDepartment(dept: Department) {
+  this.departmentStore.setCurrentDepartment(dept);
+  this.router.navigate(['/departments', dept.id]);
+}
+
 
   fetchOrganisation(id: number) {
     const token = this.authStore.token();
