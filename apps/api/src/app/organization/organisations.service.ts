@@ -48,7 +48,7 @@ async createOrganisation(dto: CreateOrganisationDto, userId: number) {
       role: 'owner',
     });
     await this.orgUserRepo.save(orgUser);
-
+    
       
     return {...org,role: 'owner'};
   } catch (err) {

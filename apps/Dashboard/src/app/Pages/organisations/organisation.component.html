@@ -1,60 +1,63 @@
-<div class="min-h-screen bg-secondary/5 font-body p-8">
-  <div class="max-w-4xl mx-auto bg-white rounded-card shadow-card p-6">
-    <ng-container *ngIf="organisationStore.currentOrg() as org; else noOrg">
-      <h1 class="text-2xl font-heading font-bold text-primary mb-6">
-        {{ org.name }}
-      </h1>
+<app-header title="Dashboard"></app-header>
 
-      <p class="text-sm text-gray-600 mb-4">
-        <span class="font-medium">Role:</span> {{ org.role || '—' }} |
-        <span class="font-medium">Created:</span>
-        {{ org.createdAt | date: 'mediumDate' }} |
-        <span class="font-medium">Departments:</span> {{ departments().length }}
-      </p>
+<!-- rest of dashboard UI -->
+
+<div class="min-h-screen bg-secondary-dark font-body p-10">
+  <div class="max-w-6xl mx-auto bg-secondary-light rounded-card shadow-card p-10 border border-tertiary/10">
+
+    <ng-container *ngIf="organisationStore.currentOrg() as org; else noOrg">
+
+      <!-- Organisation Header -->
+      <header class="mb-10 border-b border-tertiary/10 pb-6">
+        <h1 class="text-4xl font-heading font-bold text-primary mb-3">
+          {{ org.name }}
+        </h1>
+        <p class="text-sm text-tertiary-light/80 flex flex-wrap gap-3">
+          <span><span class="font-medium text-tertiary">Role:</span> {{ org.role || '—' }}</span>
+          <span><span class="font-medium text-tertiary">Created:</span> {{ org.createdAt | date: 'mediumDate' }}</span>
+          <span><span class="font-medium text-tertiary">Departments:</span> {{ departmentStore.count() }}</span>
+        </p>
+      </header>
 
       <!-- Departments Section -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-heading font-semibold text-primary">
+      <section>
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-heading font-semibold text-tertiary">
             Departments
           </h2>
           <button
             *ngIf="org.role === 'owner' && !showCreateDeptForm"
             (click)="showCreateDeptForm = true"
-            class="px-4 py-2 text-sm bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
+            class="px-5 py-2 text-sm bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
           >
             + New Department
           </button>
         </div>
 
         <!-- Create Department Form -->
-        <div
-          *ngIf="showCreateDeptForm"
-          class="mb-4 bg-gray-50 border border-tertiary/20 rounded p-4"
-        >
+        <div *ngIf="showCreateDeptForm" class="mb-8 bg-secondary-dark rounded-card p-6 border border-tertiary/10">
           <form
             [formGroup]="deptForm"
             (ngSubmit)="onCreateDepartment()"
-            class="flex gap-3 flex-col sm:flex-row"
+            class="flex flex-col sm:flex-row gap-4"
           >
             <input
               formControlName="name"
               type="text"
               placeholder="Department name"
-              class="flex-1 px-3 py-2 border rounded focus:ring-2 focus:ring-primary"
+              class="flex-1 px-4 py-2 border border-tertiary/20 rounded-button focus:ring-2 focus:ring-primary focus:outline-none"
             />
-
-            <div class="flex gap-2">
+            <div class="flex gap-3">
               <button
                 type="submit"
-                class="px-4 py-2 bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
+                class="px-5 py-2 bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
               >
                 Save
               </button>
               <button
                 type="button"
                 (click)="cancelCreateDepartment()"
-                class="px-4 py-2 bg-gray-300 text-gray-800 rounded-button shadow hover:bg-gray-400 transition"
+                class="px-5 py-2 bg-gray-300 text-gray-800 rounded-button shadow hover:bg-gray-400 transition"
               >
                 Cancel
               </button>
@@ -62,31 +65,36 @@
           </form>
         </div>
 
-        <!-- Departments List -->
-        <ul class="space-y-3">
-          <li
-            *ngFor="let dept of departments()"
-            class="p-4 bg-secondary/10 rounded shadow-sm flex justify-between items-center"
-          >
-            <div>
-              <p class="font-medium text-primary">{{ dept.name }}</p>
-              <p class="text-xs text-gray-600 mt-1">
-                Role: <span class="font-medium">{{ dept.role }}</span>
-              </p>
-            </div>
+<!-- Departments List -->
+<ul class="grid gap-6 sm:grid-cols-2">
+  <li
+    *ngFor="let dept of departmentStore.departments()"
+    class="p-6 bg-secondary rounded-card shadow-card border border-tertiary/10 hover:shadow-md transition flex flex-col justify-between"
+  >
+    <div>
+      <p class="text-lg font-medium text-primary">{{ dept.name }}</p>
+      <p class="text-xs text-tertiary-light/70 mt-2">
+        Role: <span class="font-medium">{{ dept.role }}</span>
+      </p>
+    </div>
+    <div class="mt-4 flex justify-end">
+      <button
+        class="px-4 py-2 text-sm bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
+      >
+        Open
+      </button>
+    </div>
+  </li>
+</ul>
 
-            <button
-              class="px-3 py-1 text-sm bg-secondary text-white rounded shadow hover:bg-secondary-dark transition"
-            >
-              Open
-            </button>
-          </li>
-        </ul>
-      </div>
+      </section>
     </ng-container>
 
+    <!-- Empty State -->
     <ng-template #noOrg>
-      <p class="text-gray-500">Organisation not found.</p>
+      <div class="text-center py-16 text-tertiary-light/60">
+        <p class="text-lg font-heading">Organisation not found.</p>
+      </div>
     </ng-template>
   </div>
 </div>

@@ -6,11 +6,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthStore } from '../../Stores/auth.store';
 import { OrganisationStore } from '../../Stores/organisation.store';
 import { environment } from '../../../environments/environment.';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ReactiveFormsModule],
+  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, HeaderComponent],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardPageComponent implements OnInit {
@@ -31,7 +32,6 @@ export class DashboardPageComponent implements OnInit {
     this.loadOrganisations();
   }
 
-  // API call → update store
   loadOrganisations() {
     const token = this.authStore.token();
     if (!token) return;
@@ -46,7 +46,6 @@ export class DashboardPageComponent implements OnInit {
       });
   }
 
-  // API call → create org
   onCreateOrganisation() {
     if (this.orgForm.invalid) return;
 
@@ -77,11 +76,5 @@ export class DashboardPageComponent implements OnInit {
 
   goToOrg(id: number) {
     this.router.navigate(['/organisations', id]);
-  }
-
-  logout() {
-    this.authStore.logout();
-    this.organisationStore.clear();
-    this.router.navigate(['/login']);
   }
 }

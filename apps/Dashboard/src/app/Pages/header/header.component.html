@@ -1,0 +1,22 @@
+<!-- Dashboard Top Bar -->
+<header
+  class="flex items-center justify-between px-6 py-4 bg-primary text-secondary-light shadow-card"
+>
+  <!-- Left: Title -->
+  <h1 class="text-lg sm:text-xl font-heading font-semibold">
+    Dashboard
+  </h1>
+
+  <!-- Right: User info + Logout -->
+  <div class="flex items-center gap-4">
+    <span class="hidden sm:inline text-sm text-secondary-light/80">
+      Hi, {{ authStore.user()?.name }}
+    </span>
+    <button
+      (click)="logout()"
+      class="px-4 py-2 bg-secondary text-primary font-medium rounded-button shadow hover:bg-secondary-dark transition"
+    >
+      Logout
+    </button>
+  </div>
+</header>

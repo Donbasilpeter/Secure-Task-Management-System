@@ -64,8 +64,13 @@ export class DepartmentsService {
       role: 'owner',
     });
     await this.deptUserRepo.save(deptUser);
-
-    return dept;
+// Return shaped response
+    return {
+      id: dept.id,
+      name: dept.name,
+      organisationId: dto.organisationId,
+      role: 'owner', // creator is always owner
+    };
   }
 
 async getDepartmentsByOrganisation(orgId: number, userId: number) {
