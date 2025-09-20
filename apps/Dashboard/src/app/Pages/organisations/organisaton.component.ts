@@ -129,6 +129,27 @@ export class OrganisationPageComponent implements OnInit {
         error: (err) => console.error('Failed to create department:', err),
       });
   }
+  deleteDepartment(deptId: number) {
+  const confirmed = window.confirm(
+    'Are you sure you want to delete this department? All tasks and users inside will also be removed.'
+  );
+  if (!confirmed) return;
+
+  const token = this.authStore.token();
+  if (!token) return;
+
+  this.http
+    .delete(`${environment.apiUrl}/departments/${deptId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .subscribe({
+      next: () => {
+        this.departmentStore.removeDepartment(deptId);
+      },
+      error: (err) => console.error('Failed to delete department:', err),
+    });
+}
+
 
   cancelCreateDepartment() {
     this.deptForm.reset();

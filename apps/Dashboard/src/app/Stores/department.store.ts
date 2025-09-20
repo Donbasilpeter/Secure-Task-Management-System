@@ -59,4 +59,8 @@ export class DepartmentStore {
   removeUser(userId: number) {
     this._users.update((current) => current.filter((u) => u.id !== userId));
   }
+  removeDepartment(id: number) {
+  this._departments.update((depts) => depts.filter((d) => d.id !== id));
+}
+
 }

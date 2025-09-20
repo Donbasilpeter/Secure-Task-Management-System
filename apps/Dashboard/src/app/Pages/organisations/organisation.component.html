@@ -88,28 +88,38 @@
           </form>
         </div>
 
-        <!-- Departments List -->
-        <ul class="grid gap-6 sm:grid-cols-2">
-          <li
-            *ngFor="let dept of departmentStore.departments()"
-            class="p-6 bg-secondary rounded-card shadow-card border border-tertiary/10 hover:shadow-md transition flex flex-col justify-between"
-          >
-            <div>
-              <p class="text-lg font-medium text-primary">{{ dept.name }}</p>
-              <p class="text-xs text-tertiary-light/70 mt-2">
-                Role: <span class="font-medium">{{ dept.role }}</span>
-              </p>
-            </div>
-            <div class="mt-4 flex justify-end">
-              <button
-                (click)="openDepartment(dept)"
-                class="px-4 py-2 text-sm bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
-              >
-                Open
-              </button>
-            </div>
-          </li>
-        </ul>
+ <!-- Departments List -->
+<ul class="grid gap-6 sm:grid-cols-2">
+  <li
+    *ngFor="let dept of departmentStore.departments()"
+    class="p-6 bg-secondary rounded-card shadow-card border border-tertiary/10 hover:shadow-md transition flex flex-col justify-between"
+  >
+    <div>
+      <p class="text-lg font-medium text-primary">{{ dept.name }}</p>
+      <p class="text-xs text-tertiary-light/70 mt-2">
+        Role: <span class="font-medium">{{ dept.role }}</span>
+      </p>
+    </div>
+    <div class="mt-4 flex justify-end gap-3">
+      <button
+        (click)="openDepartment(dept)"
+        class="px-4 py-2 text-sm bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
+      >
+        Open
+      </button>
+
+      <!-- 🔹 Show delete only if Org Owner OR Dept Admin -->
+      <button
+        *ngIf="dept.role === 'admin' || organisationStore.currentOrg()?.role === 'owner'"
+        (click)="deleteDepartment(dept.id)"
+        class="px-4 py-2 text-sm bg-accent-rose text-white rounded-button shadow hover:opacity-90 transition"
+      >
+        Delete
+      </button>
+    </div>
+  </li>
+</ul>
+
       </section>
     </ng-container>
 
