@@ -45,4 +45,13 @@ export class OrganisationsController {
     }
     return org;
   }
+
+  // organisations.controller.ts
+@UseGuards(AuthGuard('jwt'))
+@Get(':id/users')
+async getOrganisationUsers(@Param('id') orgId: number, @Request() req: any) {
+  const userId = req.user.id;
+  return this.organisationsService.getOrganisationUsers(Number(orgId), userId);
+}
+
 }

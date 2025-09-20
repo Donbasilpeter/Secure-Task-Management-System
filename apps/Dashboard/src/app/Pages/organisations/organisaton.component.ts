@@ -1,25 +1,24 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute,Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { OrganisationStore } from '../../Stores/organisation.store';
 import { AuthStore } from '../../Stores/auth.store';
-import { DepartmentStore,Department } from '../../Stores/department.store';
+import { DepartmentStore, Department } from '../../Stores/department.store';
 import { environment } from '../../../environments/environment.';
 import { HeaderComponent } from '../header/header.component';
-import { RouterModule } from '@angular/router'; 
-
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-organisation',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ReactiveFormsModule,HeaderComponent,RouterModule],
+  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, HeaderComponent, RouterModule],
   templateUrl: './organisation.component.html',
 })
 export class OrganisationPageComponent implements OnInit {
-  private router = inject(Router);      
-  private route = inject(ActivatedRoute);  
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
 
@@ -41,17 +40,20 @@ export class OrganisationPageComponent implements OnInit {
     if (org) {
       this.organisationStore.setCurrentOrg(org);
       this.loadDepartments(org.id);
+      if (org.role === 'owner') {
+        this.loadUsers(org.id); // NEW
+      }
     } else {
       this.fetchOrganisation(id);
       this.loadDepartments(id);
+      // Users will be loaded after fetchOrganisation when we know role
     }
   }
-  // organisation.component.ts
-openDepartment(dept: Department) {
-  this.departmentStore.setCurrentDepartment(dept);
-  this.router.navigate(['/departments', dept.id]);
-}
 
+  openDepartment(dept: Department) {
+    this.departmentStore.setCurrentDepartment(dept);
+    this.router.navigate(['/departments', dept.id]);
+  }
 
   fetchOrganisation(id: number) {
     const token = this.authStore.token();
@@ -62,7 +64,12 @@ openDepartment(dept: Department) {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe({
-        next: (org) => this.organisationStore.setCurrentOrg(org),
+        next: (org) => {
+          this.organisationStore.setCurrentOrg(org);
+          if (org.role === 'owner') {
+            this.loadUsers(org.id); // NEW
+          }
+        },
         error: (err) => console.error('Failed to fetch organisation:', err),
       });
   }
@@ -79,6 +86,21 @@ openDepartment(dept: Department) {
       .subscribe({
         next: (data) => this.departmentStore.setDepartments(data),
         error: (err) => console.error('Failed to load departments:', err),
+      });
+  }
+
+  // 🔹 Load organisation users (owner only)
+  loadUsers(orgId: number) {
+    const token = this.authStore.token();
+    if (!token) return;
+
+    this.http
+      .get<any[]>(`${environment.apiUrl}/organisations/${orgId}/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe({
+        next: (data) => this.organisationStore.setUsers(data),
+        error: (err) => console.error('Failed to load organisation users:', err),
       });
   }
 

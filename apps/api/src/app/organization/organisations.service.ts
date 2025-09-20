@@ -3,6 +3,8 @@ import {
   Injectable,
   ConflictException,
   InternalServerErrorException,
+    ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -97,6 +99,37 @@ async findOneByUser(orgId: number, userId: number) {
     role: orgUser.role,
     departmentsCount:  orgUser.organisation.departments.length
   };
+}
+
+async getOrganisationUsers(orgId: number, actingUserId: number) {
+  // 1. Load organisation user record
+  const orgUser = await this.orgUserRepo.findOne({
+    where: { organisation: { id: orgId }, user: { id: actingUserId } },
+    relations: ['organisation', 'user'],
+  });
+
+  if (!orgUser) {
+    throw new NotFoundException('Organisation not found or access denied');
+  }
+
+  // 2. Only owner can list all users
+  if (orgUser.role !== 'owner') {
+    throw new ForbiddenException('Only the organisation owner can view all users');
+  }
+
+  // 3. Load all users in this organisation
+  const orgUsers = await this.orgUserRepo.find({
+    where: { organisation: { id: orgId } },
+    relations: ['user'],
+  });
+
+  // 4. Return simplified response
+  return orgUsers.map((ou) => ({
+    id: ou.user.id,
+    name: ou.user.name,
+    email: ou.user.email,
+    role: ou.role,
+  }));
 }
 
 

@@ -22,6 +22,26 @@
         </p>
       </header>
 
+        <!-- 🔹 Organisation Users (Owner only) -->
+  <section *ngIf="org.role === 'owner'" class="mb-10">
+    <h2 class="text-2xl font-heading font-semibold text-tertiary mb-4">Organisation Users</h2>
+    <div *ngIf="organisationStore.users().length > 0; else noUsers">
+      <ul class="divide-y divide-gray-200 border rounded-card bg-secondary-dark max-h-64 overflow-y-auto">
+        <li *ngFor="let u of organisationStore.users()" class="flex justify-between items-center px-4 py-3">
+          <div>
+            <p class="font-medium text-tertiary">{{ u.name || u.email }}</p>
+            <p class="text-xs text-gray-500">{{ u.role }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <ng-template #noUsers>
+      <div class="p-4 text-center text-gray-500 bg-secondary rounded-card border">
+        No users found in this organisation.
+      </div>
+    </ng-template>
+  </section>
+
       <!-- Departments Section -->
       <section>
         <div class="flex items-center justify-between mb-6">
