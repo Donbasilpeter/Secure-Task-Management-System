@@ -1,4 +1,3 @@
-// apps/api/src/app/tasks/task.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,10 +5,10 @@ import {
   ManyToOne,
   CreateDateColumn,
 } from 'typeorm';
-import { Department } from '@secure-task-management-system/data';
-import { User } from '@secure-task-management-system/data';
+import { Department } from './department.entity';
+import { User } from './user.entity';
 
-@Entity()
+@Entity('tasks')
 export class Task {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -20,13 +19,13 @@ export class Task {
   @Column({ type: 'text', nullable: true })
   description!: string;
 
-  @ManyToOne(() => Department, { eager: true })
+  @ManyToOne(() => Department, (dept) => dept.tasks, { onDelete: 'CASCADE' })
   department!: Department;
 
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, (user) => user.createdTasks, { eager: true })
   createdBy!: User;
 
-  @ManyToOne(() => User, { eager: true, nullable: true })
+  @ManyToOne(() => User, (user) => user.assignedTasks, { eager: true, nullable: true })
   assignedTo!: User;
 
   @CreateDateColumn()

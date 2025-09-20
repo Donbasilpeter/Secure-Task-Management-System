@@ -7,11 +7,13 @@ import {
   OneToMany,
 } from 'typeorm';
 import { OrganisationUser } from './organisation-user.entity';
+import { DepartmentUser } from './department-user.entity';
+import { Task } from './task.entity';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number; // int, auto-increment
+  id!: number;
 
   @Column({ type: 'varchar', length: 255 })
   name!: string;
@@ -26,7 +28,19 @@ export class User {
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
-  // 🔗 Relation to organisation_users
+  //Organisation memberships
   @OneToMany(() => OrganisationUser, (ou) => ou.user)
   organisationUsers!: OrganisationUser[];
+
+  // Department memberships
+  @OneToMany(() => DepartmentUser, (du) => du.user)
+  departmentUsers!: DepartmentUser[];
+
+  // Tasks created by user
+  @OneToMany(() => Task, (task) => task.createdBy)
+  createdTasks!: Task[];
+
+  //Tasks assigned to user
+  @OneToMany(() => Task, (task) => task.assignedTo)
+  assignedTasks!: Task[];
 }

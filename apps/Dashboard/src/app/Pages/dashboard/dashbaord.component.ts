@@ -94,6 +94,26 @@ export class DashboardPageComponent implements OnInit {
     this.orgForm.reset();
     this.showCreateForm = false;
   }
+  deleteOrganisation(id: number) {
+  const confirmed = window.confirm('Are you sure you want to delete this organisation? This will remove all departments, users, and tasks under it.');
+  if (!confirmed) return;
+
+  const token = this.authStore.token();
+  if (!token) return;
+
+  this.http
+    .delete(`${environment.apiUrl}/organisations/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .subscribe({
+      next: () => {
+        // remove from store
+        this.organisationStore.removeOrganisation(id);
+      },
+      error: (err) => console.error('Failed to delete organisation:', err),
+    });
+}
+
 
   goToOrg(id: number) {
     this.router.navigate(['/organisations', id]);

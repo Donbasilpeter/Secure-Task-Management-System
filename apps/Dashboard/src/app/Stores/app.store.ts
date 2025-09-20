@@ -3,7 +3,6 @@ import { Injectable, signal, computed } from '@angular/core';
 export interface AppStats {
   organisations: number;
   departments: number;
-  tasks: number;
   assignedTasks: number;
 }
 
@@ -30,7 +29,6 @@ export class AppStore {
   private _stats = signal<AppStats>({
     organisations: 0,
     departments: 0,
-    tasks: 0,
     assignedTasks: 0,
   });
 
@@ -42,7 +40,6 @@ export class AppStore {
     () =>
       this._stats().organisations +
       this._stats().departments +
-      this._stats().tasks +
       this._stats().assignedTasks,
   );
 
@@ -59,7 +56,6 @@ export class AppStore {
     this._stats.set({
       organisations: 0,
       departments: 0,
-      tasks: 0,
       assignedTasks: 0,
     });
   }

@@ -60,4 +60,10 @@ export class OrganisationStore {
   removeUser(userId: number) {
     this._users.update((current) => current.filter((u) => u.id !== userId));
   }
+  removeOrganisation(id: number) {
+  this._organisations.update((orgs) =>
+    orgs.filter((org) => org.id !== id)
+  );
+}
+
 }

@@ -127,11 +127,6 @@ async getUserStats(userId: number) {
       where: { user: { id: userId } },
     });
 
-    // ✅ Count tasks assigned to the user (all tasks visible)
-    const taskCount = await this.taskRepo.count({
-      where: { assignedTo: { id: userId } },
-    });
-
     // ✅ Assigned task count only (no full list)
     const assignedTaskCount = await this.taskRepo.count({
       where: { assignedTo: { id: userId } },
@@ -140,7 +135,6 @@ async getUserStats(userId: number) {
     return {
       organisations: orgCount,
       departments: deptCount,
-      tasks: taskCount,
       assignedTasks: assignedTaskCount, // 👈 number only
     };
   } catch (err) {

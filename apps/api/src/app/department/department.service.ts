@@ -250,4 +250,44 @@ async getDepartmentUsers(deptId: number, actingUserId: number) {
 }
 
 
+// ...
+
+async deleteDepartment(deptId: number, userId: number) {
+  // 1. Load department with organisation
+  const department = await this.deptRepo.findOne({
+    where: { id: deptId },
+    relations: ['organisation'],
+  });
+
+  if (!department) {
+    throw new NotFoundException('Department not found');
+  }
+
+  // 2. Check if user is Org Owner OR Dept Admin
+  const orgUser = await this.orgUserRepo.findOne({
+    where: {
+      organisation: { id: department.organisation.id },
+      user: { id: userId },
+    },
+  });
+
+  const deptUser = await this.deptUserRepo.findOne({
+    where: { department: { id: deptId }, user: { id: userId } },
+  });
+
+  const isOwner = orgUser?.role === 'owner';
+  const isDeptAdmin = deptUser?.role === 'admin';
+
+  if (!isOwner && !isDeptAdmin) {
+    throw new ForbiddenException('Not allowed to delete this department');
+  }
+
+  // 3. Delete department (cascades to deptUsers + tasks)
+  await this.deptRepo.delete(deptId);
+
+  return { message: 'Department and all related data deleted successfully' };
+}
+
+
+
 }

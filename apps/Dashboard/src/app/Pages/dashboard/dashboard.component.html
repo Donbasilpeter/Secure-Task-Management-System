@@ -11,7 +11,7 @@
   >
     <!-- Summary -->
     <div
-      class="px-6 py-6 grid grid-cols-1 sm:grid-cols-4 gap-6 text-center bg-secondary-dark"
+      class="px-6 py-6 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center bg-secondary-dark"
     >
       <div class="p-4 bg-secondary rounded-card shadow-sm border border-tertiary/10">
         <p class="text-sm text-tertiary-light">Total Orgs</p>
@@ -23,12 +23,6 @@
         <p class="text-sm text-tertiary-light">Departments</p>
         <p class="text-3xl font-heading font-bold text-primary-light mt-1">
           {{ appStore.stats().departments }}
-        </p>
-      </div>
-      <div class="p-4 bg-secondary rounded-card shadow-sm border border-tertiary/10">
-        <p class="text-sm text-tertiary-light">Tasks</p>
-        <p class="text-3xl font-heading font-bold text-accent-rose mt-1">
-          {{ appStore.stats().tasks }}
         </p>
       </div>
       <div class="p-4 bg-secondary rounded-card shadow-sm border border-tertiary/10">
@@ -88,30 +82,42 @@
     </div>
 
     <!-- Organisations List -->
-    <ul class="px-6 py-6 space-y-4">
-      <li
-        *ngFor="let org of organisationStore.organisations()"
-        class="p-4 bg-secondary rounded-card shadow-sm flex items-center justify-between hover:bg-tertiary-light/5 transition"
-      >
-        <div>
-          <p class="font-medium text-primary text-base">{{ org.name }}</p>
-          <p class="text-xs text-tertiary-light mt-1">
-            Role:
-            <span class="font-medium text-primary">{{ org.role || '—' }}</span>
-            • Created: {{ org.createdAt | date:'mediumDate' }}
-          </p>
-          <p class="text-xs text-tertiary-light mt-1">
-            Departments: {{ org.departmentsCount }} 
-          </p>
-        </div>
+<ul class="px-6 py-6 space-y-4">
+  <li
+    *ngFor="let org of organisationStore.organisations()"
+    class="p-4 bg-secondary rounded-card shadow-sm flex items-center justify-between hover:bg-tertiary-light/5 transition"
+  >
+    <div>
+      <p class="font-medium text-primary text-base">{{ org.name }}</p>
+      <p class="text-xs text-tertiary-light mt-1">
+        Role:
+        <span class="font-medium text-primary">{{ org.role || '—' }}</span>
+        • Created: {{ org.createdAt | date:'mediumDate' }}
+      </p>
+      <p class="text-xs text-tertiary-light mt-1">
+        Departments: {{ org.departmentsCount }}
+      </p>
+    </div>
 
-        <button
-          (click)="goToOrg(org.id)"
-          class="text-sm px-4 py-2 bg-primary text-secondary-light font-medium rounded-button shadow hover:bg-primary-dark transition"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
+    <div class="flex gap-3">
+      <button
+        (click)="goToOrg(org.id)"
+        class="text-sm px-4 py-2 bg-primary text-secondary-light font-medium rounded-button shadow hover:bg-primary-dark transition"
+      >
+        Open
+      </button>
+
+      <!-- 🔹 Delete button only for owner -->
+      <button
+        *ngIf="org.role === 'owner'"
+        (click)="deleteOrganisation(org.id)"
+        class="text-sm px-4 py-2 bg-accent-rose text-secondary-light font-medium rounded-button shadow hover:opacity-90 transition"
+      >
+        Delete
+      </button>
+    </div>
+  </li>
+</ul>
+
   </section>
 </div>

@@ -1,5 +1,4 @@
-// organisation-user.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique  } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { Organisation } from './organisation.entity';
 import { User } from './user.entity';
 
@@ -13,11 +12,9 @@ export class OrganisationUser {
   @JoinColumn({ name: 'organisation_id' })
   organisation!: Organisation;
 
-
   @ManyToOne(() => User, (user) => user.organisationUsers, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user!: User;
-
 
   @Column({ default: 'owner' })
   role!: string;

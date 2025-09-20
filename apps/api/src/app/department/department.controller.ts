@@ -6,6 +6,7 @@ import {
   UseGuards,
   Request,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { DepartmentsService } from './department.service';
 import { CreateDepartmentDto } from '@secure-task-management-system/data';
@@ -69,5 +70,13 @@ async getDepartmentUsers(
   const userId = req.user.id;
   return this.departmentsService.getDepartmentUsers(Number(deptId), userId);
 }
+
+  // DELETE department
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':id')
+  async remove(@Param('id') id: number, @Request() req: any) {
+    const userId = req.user.id;
+    return this.departmentsService.deleteDepartment(Number(id), userId);
+  }
 
 }

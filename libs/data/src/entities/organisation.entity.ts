@@ -1,4 +1,3 @@
-// organisation.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -21,10 +20,10 @@ export class Organisation {
   createdAt!: Date;
 
   // 🔗 Users in organisation
-  @OneToMany(() => OrganisationUser, (ou) => ou.organisation)
+  @OneToMany(() => OrganisationUser, (ou) => ou.organisation, { cascade: true })
   organisationUsers!: OrganisationUser[];
 
-  // 🔗 Departments in organisation ✅
-  @OneToMany(() => Department, (dept) => dept.organisation)
+  // 🔗 Departments in organisation
+  @OneToMany(() => Department, (dept) => dept.organisation, { cascade: true })
   departments!: Department[];
 }

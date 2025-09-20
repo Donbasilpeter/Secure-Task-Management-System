@@ -1,4 +1,3 @@
-// department-user.entity.ts
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 import { User } from './user.entity';
 import { Department } from './department.entity';
@@ -11,7 +10,7 @@ export class DepartmentUser {
   @ManyToOne(() => Department, (dept) => dept.departmentUsers, { onDelete: 'CASCADE' })
   department!: Department;
 
-  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.departmentUsers, { onDelete: 'CASCADE' })
   user!: User;
 
   @Column()

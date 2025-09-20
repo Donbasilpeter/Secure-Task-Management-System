@@ -132,6 +132,28 @@ async getOrganisationUsers(orgId: number, actingUserId: number) {
   }));
 }
 
+async deleteOrganisation(orgId: number, userId: number) {
+  // 1. Check if user is the owner
+  const orgUser = await this.orgUserRepo.findOne({
+    where: { organisation: { id: orgId }, user: { id: userId } },
+  });
+
+  if (!orgUser || orgUser.role !== 'owner') {
+    throw new ForbiddenException('Only the organisation owner can delete it');
+  }
+
+  // 2. Ensure org exists
+  const org = await this.orgRepo.findOne({ where: { id: orgId } });
+  if (!org) {
+    throw new NotFoundException('Organisation not found');
+  }
+
+  // 3. Delete org (cascade removes everything else)
+  await this.orgRepo.delete(orgId);
+
+  return { message: 'Organisation and all related data deleted successfully' };
+}
+
 
 
 }

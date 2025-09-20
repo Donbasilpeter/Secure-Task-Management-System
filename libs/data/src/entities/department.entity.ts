@@ -1,4 +1,3 @@
-// department.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,8 +7,8 @@ import {
 } from 'typeorm';
 import { Organisation } from './organisation.entity';
 import { DepartmentUser } from './department-user.entity';
-import {  IsNotEmpty } from 'class-validator';
-
+import { Task } from './task.entity';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity('departments')
 export class Department {
@@ -18,7 +17,6 @@ export class Department {
 
   @Column()
   @IsNotEmpty()
-  
   name!: string;
 
   // Belongs to organisation
@@ -26,6 +24,10 @@ export class Department {
   organisation!: Organisation;
 
   // Users in department
-  @OneToMany(() => DepartmentUser, (du) => du.department)
+  @OneToMany(() => DepartmentUser, (du) => du.department, { cascade: true })
   departmentUsers!: DepartmentUser[];
+
+  // Tasks in department
+  @OneToMany(() => Task, (task) => task.department, { cascade: true })
+  tasks!: Task[];
 }

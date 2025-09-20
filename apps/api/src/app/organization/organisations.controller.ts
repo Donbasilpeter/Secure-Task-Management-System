@@ -7,7 +7,7 @@ import {
   Request,
   Param,
   NotFoundException,
-  ForbiddenException,
+  Delete, 
 } from '@nestjs/common';
 import { OrganisationsService } from './organisations.service';
 import { CreateOrganisationDto } from '@secure-task-management-system/data';
@@ -52,6 +52,13 @@ export class OrganisationsController {
 async getOrganisationUsers(@Param('id') orgId: number, @Request() req: any) {
   const userId = req.user.id;
   return this.organisationsService.getOrganisationUsers(Number(orgId), userId);
+}
+
+@UseGuards(AuthGuard('jwt'))
+@Delete(':id')
+async remove(@Param('id') id: number, @Request() req: any) {
+  const userId = req.user.id;
+  return this.organisationsService.deleteOrganisation(Number(id), userId);
 }
 
 }
