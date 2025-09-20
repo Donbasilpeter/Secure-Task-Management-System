@@ -5,13 +5,19 @@ import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthStore } from '../../Stores/auth.store';
 import { OrganisationStore } from '../../Stores/organisation.store';
+import { AppStore } from '../../Stores/app.store';
 import { environment } from '../../../environments/environment.';
 import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, HeaderComponent],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    HeaderComponent,
+  ],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardPageComponent implements OnInit {
@@ -21,6 +27,7 @@ export class DashboardPageComponent implements OnInit {
 
   authStore = inject(AuthStore);
   organisationStore = inject(OrganisationStore);
+  appStore = inject(AppStore);
 
   showCreateForm = false;
 
@@ -30,6 +37,7 @@ export class DashboardPageComponent implements OnInit {
 
   ngOnInit() {
     this.loadOrganisations();
+    this.loadStats();
   }
 
   loadOrganisations() {
@@ -43,6 +51,20 @@ export class DashboardPageComponent implements OnInit {
       .subscribe({
         next: (data) => this.organisationStore.setOrganisations(data),
         error: (err) => console.error('Failed to load organisations:', err),
+      });
+  }
+
+  loadStats() {
+    const token = this.authStore.token();
+    if (!token) return;
+
+    this.http
+      .get<any>(`${environment.apiUrl}/users/stats`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe({
+        next: (stats) => this.appStore.setStats(stats),
+        error: (err) => console.error('Failed to load stats:', err),
       });
   }
 
@@ -64,8 +86,7 @@ export class DashboardPageComponent implements OnInit {
           this.orgForm.reset();
           this.showCreateForm = false;
         },
-        error: (err) =>
-          console.error('Failed to create organisation:', err),
+        error: (err) => console.error('Failed to create organisation:', err),
       });
   }
 

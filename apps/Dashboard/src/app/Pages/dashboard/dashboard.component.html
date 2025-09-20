@@ -1,41 +1,45 @@
 <!-- Fixed Header -->
 <app-header
-  title="Department"
+  title="Dashboard"
   class="fixed top-0 left-0 right-0 z-50 shadow-card"
 ></app-header>
 
-<!-- Page wrapper with top padding to offset fixed header -->
 <div class="min-h-screen bg-secondary-dark font-body p-10 pt-24 overflow-x-hidden overflow-y-auto">
-
-  <!-- Organisation Overview -->
+  <!-- 🔹 Stats Overview -->
   <section
     class="bg-secondary-light rounded-b-card shadow-card mb-10 overflow-hidden border border-tertiary/10"
   >
-    <!-- 🔹 Summary -->
+    <!-- Summary -->
     <div
-      class="px-6 py-6 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center bg-secondary-dark"
+      class="px-6 py-6 grid grid-cols-1 sm:grid-cols-4 gap-6 text-center bg-secondary-dark"
     >
       <div class="p-4 bg-secondary rounded-card shadow-sm border border-tertiary/10">
         <p class="text-sm text-tertiary-light">Total Orgs</p>
         <p class="text-3xl font-heading font-bold text-accent-gold mt-1">
-          {{ organisationStore.orgCount() }}
+          {{ appStore.stats().organisations }}
         </p>
       </div>
       <div class="p-4 bg-secondary rounded-card shadow-sm border border-tertiary/10">
         <p class="text-sm text-tertiary-light">Departments</p>
         <p class="text-3xl font-heading font-bold text-primary-light mt-1">
-          0
+          {{ appStore.stats().departments }}
         </p>
       </div>
       <div class="p-4 bg-secondary rounded-card shadow-sm border border-tertiary/10">
-        <p class="text-sm text-tertiary-light">Accessible Tasks</p>
+        <p class="text-sm text-tertiary-light">Tasks</p>
         <p class="text-3xl font-heading font-bold text-accent-rose mt-1">
-          0
+          {{ appStore.stats().tasks }}
+        </p>
+      </div>
+      <div class="p-4 bg-secondary rounded-card shadow-sm border border-tertiary/10">
+        <p class="text-sm text-tertiary-light">Assigned Tasks</p>
+        <p class="text-3xl font-heading font-bold text-primary mt-1">
+          {{ appStore.stats().assignedTasks }}
         </p>
       </div>
     </div>
 
-    <!-- 🔹 Organisations title -->
+    <!-- Organisations Section -->
     <div
       class="flex items-center justify-between px-6 py-4 border-b border-tertiary/10"
     >
@@ -51,7 +55,7 @@
       </button>
     </div>
 
-    <!-- 🔹 New Organisation Form -->
+    <!-- Create Organisation Form -->
     <div *ngIf="showCreateForm" class="px-6 py-6 border-b border-tertiary/10 bg-secondary/30">
       <form
         [formGroup]="orgForm"
@@ -83,7 +87,7 @@
       </form>
     </div>
 
-    <!-- 🔹 Org list -->
+    <!-- Organisations List -->
     <ul class="px-6 py-6 space-y-4">
       <li
         *ngFor="let org of organisationStore.organisations()"
@@ -92,11 +96,12 @@
         <div>
           <p class="font-medium text-primary text-base">{{ org.name }}</p>
           <p class="text-xs text-tertiary-light mt-1">
-            Role: <span class="font-medium text-primary">{{ org.role || '—' }}</span> •
-            Created: {{ org.createdAt | date:'mediumDate' }}
+            Role:
+            <span class="font-medium text-primary">{{ org.role || '—' }}</span>
+            • Created: {{ org.createdAt | date:'mediumDate' }}
           </p>
           <p class="text-xs text-tertiary-light mt-1">
-            Departments: {{ org.departmentsCount }} • Tasks: 0
+            Departments: {{ org.departmentsCount }} 
           </p>
         </div>
 

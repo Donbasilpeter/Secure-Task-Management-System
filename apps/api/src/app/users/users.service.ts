@@ -9,27 +9,41 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@secure-task-management-system/data';
-import { CreateUserDto } from '@secure-task-management-system/data';
+
+// 🔹 Entities from your shared data lib
+import {
+  User,
+  OrganisationUser,
+  DepartmentUser,
+  Task,
+  CreateUserDto,
+} from '@secure-task-management-system/data';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly repo: Repository<User>,
+    @InjectRepository(User)
+    private readonly repo: Repository<User>,
+
+    @InjectRepository(OrganisationUser)
+    private readonly orgUserRepo: Repository<OrganisationUser>,
+
+    @InjectRepository(DepartmentUser)
+    private readonly deptUserRepo: Repository<DepartmentUser>,
+
+    @InjectRepository(Task)
+    private readonly taskRepo: Repository<Task>,
+
     private readonly jwt: JwtService,
-  ) { }
+  ) {}
 
   /**
-  * Validate user credentials (email + password).
-  * - Returns the user if credentials are valid
-  * - Throws UnauthorizedException if invalid
-  * - Wraps any unexpected error in an InternalServerErrorException
-  */
+   * Validate user credentials (email + password).
+   */
   async validateUser(email: string, password: string) {
     try {
       const user = await this.repo.findOne({ where: { email } });
       if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-
         throw new UnauthorizedException('Invalid credentials');
       }
       return user;
@@ -43,12 +57,8 @@ export class UsersService {
     }
   }
 
-
   /**
    * Login a user with email + password.
-   * - Validates credentials
-   * - Issues a signed JWT token
-   * - Returns token and basic user info
    */
   async login(email: string, password: string) {
     try {
@@ -70,10 +80,6 @@ export class UsersService {
 
   /**
    * Register a new user.
-   * - Validates DTO fields
-   * - Checks for duplicate email
-   * - Hashes password before saving
-   * - Returns saved user
    */
   async createUser(dto: CreateUserDto) {
     try {
@@ -93,9 +99,9 @@ export class UsersService {
         passwordHash,
       });
       const savedUser = await this.repo.save(user);
-      delete savedUser.passwordHash; // remove sensitive field
-      return savedUser;
 
+      delete savedUser.passwordHash; // hide sensitive field
+      return savedUser;
     } catch (err) {
       if (
         err instanceof BadRequestException ||
@@ -106,4 +112,41 @@ export class UsersService {
       throw new InternalServerErrorException('Failed to create user');
     }
   }
+  /**
+ * Get accumulated stats for the user.
+ */
+async getUserStats(userId: number) {
+  try {
+    // ✅ Count orgs where user is at least viewer
+    const orgCount = await this.orgUserRepo.count({
+      where: { user: { id: userId } },
+    });
+
+    // ✅ Count depts where user is at least viewer
+    const deptCount = await this.deptUserRepo.count({
+      where: { user: { id: userId } },
+    });
+
+    // ✅ Count tasks assigned to the user (all tasks visible)
+    const taskCount = await this.taskRepo.count({
+      where: { assignedTo: { id: userId } },
+    });
+
+    // ✅ Assigned task count only (no full list)
+    const assignedTaskCount = await this.taskRepo.count({
+      where: { assignedTo: { id: userId } },
+    });
+
+    return {
+      organisations: orgCount,
+      departments: deptCount,
+      tasks: taskCount,
+      assignedTasks: assignedTaskCount, // 👈 number only
+    };
+  } catch (err) {
+    throw new InternalServerErrorException('Failed to fetch user statistics');
+  }
+}
+
+
 }
