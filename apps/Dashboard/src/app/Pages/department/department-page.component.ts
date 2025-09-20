@@ -5,6 +5,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DepartmentStore, Department } from '../../Stores/department.store';
 import { AuthStore } from '../../Stores/auth.store';
+import { TaskStore } from '../../Stores/task.store';
 import { environment } from '../../../environments/environment.';
 import { HeaderComponent } from '../header/header.component';
 
@@ -21,13 +22,17 @@ export class DepartmentPageComponent implements OnInit {
 
   departmentStore = inject(DepartmentStore);
   authStore = inject(AuthStore);
+  taskStore = inject(TaskStore);
 
   showUserModal = false;
   showTaskModal = false;
+  showCommentsModal = false;
 
   deptId!: number;
   department: Department | undefined;
-  tasks: any[] = [];
+
+  selectedTask: any | null = null;
+  comments: any[] = [];
 
   // Add user form
   addUserForm = this.fb.group({
@@ -39,17 +44,22 @@ export class DepartmentPageComponent implements OnInit {
   taskForm = this.fb.group({
     title: ['', Validators.required],
     description: [''],
-    assignedToId: [this.authStore.user()?.id || null, Validators.required], // default self
+    assignedToId: [this.authStore.user()?.id || null, Validators.required],
+  });
+
+  // Add comment form
+  commentForm = this.fb.group({
+    comment: ['', Validators.required],
   });
 
   ngOnInit() {
     this.deptId = Number(this.route.snapshot.paramMap.get('id'));
     this.fetchDepartment(this.deptId);
     this.fetchTasks(this.deptId);
-    this.fetchUsers(this.deptId); // 🔹 fetch department users
+    this.fetchUsers(this.deptId);
   }
 
-  // Fetch single department
+  // Fetch department
   fetchDepartment(id: number) {
     const token = this.authStore.token();
     if (!token) return;
@@ -70,7 +80,7 @@ export class DepartmentPageComponent implements OnInit {
       });
   }
 
-  // Fetch tasks for department
+  // Fetch tasks
   fetchTasks(id: number) {
     const token = this.authStore.token();
     if (!token) return;
@@ -80,12 +90,12 @@ export class DepartmentPageComponent implements OnInit {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe({
-        next: (res) => (this.tasks = res),
+        next: (res) => this.taskStore.setTasks(res),
         error: (err) => console.error('Failed to fetch tasks:', err),
       });
   }
 
-  // 🔹 Fetch users
+  // Fetch users
   fetchUsers(id: number) {
     const token = this.authStore.token();
     if (!token) return;
@@ -121,7 +131,7 @@ export class DepartmentPageComponent implements OnInit {
       .subscribe({
         next: (user) => {
           alert('User added successfully');
-          this.departmentStore.addUser(user); // update store
+          this.departmentStore.addUser(user);
           this.addUserForm.reset({ role: 'viewer' });
         },
         error: (err) => console.error('Failed to add user:', err),
@@ -139,7 +149,7 @@ export class DepartmentPageComponent implements OnInit {
       title: this.taskForm.value.title,
       description: this.taskForm.value.description,
       departmentId: this.department.id,
-      assignedToId: this.taskForm.value.assignedToId, // 🔹 new field
+      assignedToId: this.taskForm.value.assignedToId,
     };
 
     this.http
@@ -148,12 +158,58 @@ export class DepartmentPageComponent implements OnInit {
       })
       .subscribe({
         next: (task) => {
-          this.tasks.unshift(task);
+          this.taskStore.addTask(task);
           this.taskForm.reset({
-            assignedToId: this.authStore.user()?.id, // reset to self
+            assignedToId: this.authStore.user()?.id,
           });
         },
         error: (err) => console.error('Failed to create task:', err),
+      });
+  }
+
+  // Open comments modal
+  onOpenTask(task: any) {
+    this.selectedTask = task;
+    this.showCommentsModal = true;
+    this.fetchComments(task.id);
+  }
+
+  // Fetch comments
+  fetchComments(taskId: number) {
+    const token = this.authStore.token();
+    if (!token) return;
+
+    this.http
+      .get<any[]>(`${environment.apiUrl}/tasks/${taskId}/comments`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe({
+        next: (res) => (this.comments = res),
+        error: (err) => console.error('Failed to fetch comments:', err),
+      });
+  }
+
+  // Add comment
+  onAddComment() {
+    if (!this.selectedTask || this.commentForm.invalid) return;
+
+    const token = this.authStore.token();
+    if (!token) return;
+
+    const payload = { comment: this.commentForm.value.comment };
+
+    this.http
+      .post<any>(
+        `${environment.apiUrl}/tasks/${this.selectedTask.id}/comments`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .subscribe({
+        next: (newComment) => {
+          this.comments.push(newComment);
+          this.commentForm.reset();
+        },
+        error: (err) => console.error('Failed to add comment:', err),
       });
   }
 }

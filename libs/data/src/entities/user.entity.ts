@@ -9,6 +9,7 @@ import {
 import { OrganisationUser } from './organisation-user.entity';
 import { DepartmentUser } from './department-user.entity';
 import { Task } from './task.entity';
+import { TaskComment } from './task-comment.entity';
 
 @Entity('users')
 export class User {
@@ -28,7 +29,7 @@ export class User {
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
-  //Organisation memberships
+  // Organisation memberships
   @OneToMany(() => OrganisationUser, (ou) => ou.user)
   organisationUsers!: OrganisationUser[];
 
@@ -40,7 +41,11 @@ export class User {
   @OneToMany(() => Task, (task) => task.createdBy)
   createdTasks!: Task[];
 
-  //Tasks assigned to user
+  // Tasks assigned to user
   @OneToMany(() => Task, (task) => task.assignedTo)
   assignedTasks!: Task[];
+
+  // Task comments created by user
+  @OneToMany(() => TaskComment, (comment) => comment.user)
+  taskComments!: TaskComment[];
 }

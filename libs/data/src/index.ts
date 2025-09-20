@@ -3,6 +3,7 @@ export * from './dto/create-department.dto'
 export * from './dto/create-user.dto';
 export * from './dto/create-organisation.dto';
 export * from './dto/create-task.dto'
+export * from './dto/create-task-comment.dto'
 
 export * from './interface/user.interface';
 export * from './interface/organisation.interface'
@@ -13,7 +14,7 @@ export * from './entities/department-user.entity'
 export * from './entities/user.entity';
 export * from './entities/organisation-user.entity';
 export * from './entities/task.entity'
-
+export * from './entities/task-comment.entity'
 
 
 

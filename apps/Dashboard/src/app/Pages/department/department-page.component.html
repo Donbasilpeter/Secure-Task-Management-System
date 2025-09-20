@@ -45,10 +45,11 @@
       <section>
         <h2 class="text-2xl font-heading font-semibold text-primary mb-4">Tasks</h2>
 
-        <ng-container *ngIf="tasks.length > 0; else noTasks">
+        <ng-container *ngIf="taskStore.tasks().length > 0; else noTasks">
           <ul class="space-y-4">
-            <li *ngFor="let task of tasks"
-                class="p-5 border rounded-card shadow-card bg-secondary hover:bg-secondary-dark transition">
+            <li *ngFor="let task of taskStore.tasks()"
+                (click)="onOpenTask(task)"
+                class="p-5 border rounded-card shadow-card bg-secondary hover:bg-secondary-dark transition cursor-pointer">
               <div class="flex justify-between items-center mb-2">
                 <h3 class="font-heading font-semibold text-lg text-tertiary">{{ task.title }}</h3>
                 <span class="text-xs text-gray-500">{{ task.createdAt | date:'medium' }}</span>
@@ -155,10 +156,7 @@
         <label class="block text-sm font-medium text-tertiary mb-1">Assign To</label>
         <select formControlName="assignedToId"
                 class="w-full border border-gray-300 rounded-button px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-          <!-- Default self -->
           <option [value]="authStore.user()?.id">Myself</option>
-
-          <!-- Other department users -->
           <ng-container *ngFor="let u of departmentStore.users()">
             <option *ngIf="u.id !== authStore.user()?.id" [value]="u.id">
               {{ u.name || u.email }}
@@ -172,6 +170,49 @@
                 class="px-6 py-2 bg-accent-gold text-tertiary font-semibold rounded-button shadow hover:opacity-90 transition"
                 [disabled]="taskForm.invalid">
           Create Task
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 🔹 Task Comments Modal -->
+<div *ngIf="showCommentsModal" class="fixed inset-0 bg-tertiary/70 flex items-center justify-center z-50 overflow-hidden">
+  <div class="bg-secondary-light rounded-card shadow-card w-full max-w-2xl max-h-screen overflow-auto p-6 relative">
+    <button (click)="showCommentsModal = false"
+            class="absolute top-3 right-3 text-gray-400 hover:text-tertiary">✕</button>
+
+    <h2 class="text-xl font-heading font-semibold text-primary mb-4">
+      Comments for {{ selectedTask?.title }}
+    </h2>
+
+    <!-- 🔹 Comments List -->
+    <div *ngIf="comments.length > 0; else noComments" class="space-y-4 mb-6">
+      <div *ngFor="let c of comments" class="p-4 bg-secondary-dark rounded-card border">
+        <p class="text-sm text-gray-700">{{ c.comment }}</p>
+        <p class="text-xs text-gray-500 mt-1">
+          By {{ c.user?.name || c.user?.email }} · {{ c.createdAt | date:'short' }}
+        </p>
+      </div>
+    </div>
+    <ng-template #noComments>
+      <p class="text-gray-500 text-center">No comments yet.</p>
+    </ng-template>
+
+    <!-- 🔹 Add Comment Form (if permission) -->
+    <form *ngIf="department?.role === 'admin' || department?.role === 'owner' || selectedTask?.assignedTo?.id === authStore.user()?.id"
+          [formGroup]="commentForm"
+          (ngSubmit)="onAddComment()"
+          class="space-y-4 border-t pt-4 mt-4">
+      <label class="block text-sm font-medium text-tertiary">Add Comment</label>
+      <textarea formControlName="comment" rows="3"
+                class="w-full border border-gray-300 rounded-button px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Write your comment..."></textarea>
+      <div class="flex justify-end">
+        <button type="submit"
+                class="px-6 py-2 bg-primary text-secondary-light rounded-button shadow hover:bg-primary-dark transition"
+                [disabled]="commentForm.invalid">
+          Post Comment
         </button>
       </div>
     </form>
