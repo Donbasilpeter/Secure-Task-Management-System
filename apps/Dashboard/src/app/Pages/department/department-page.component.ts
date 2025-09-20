@@ -21,24 +21,33 @@ export class DepartmentPageComponent implements OnInit {
 
   departmentStore = inject(DepartmentStore);
   authStore = inject(AuthStore);
+  showUserModal = false;
+showTaskModal = false;
+
 
   deptId!: number;
   department: Department | undefined;
+  tasks: any[] = [];
 
-  // 🔹 Add user form
+  // add user form
   addUserForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     role: ['viewer', Validators.required],
   });
 
+  // Create task form
+  taskForm = this.fb.group({
+    title: ['', Validators.required],
+    description: [''],
+  });
+
   ngOnInit() {
     this.deptId = Number(this.route.snapshot.paramMap.get('id'));
-
-    // Always fetch department on init
     this.fetchDepartment(this.deptId);
+    this.fetchTasks(this.deptId);
   }
 
-  // 🔹 Fetch single department by ID
+  // Fetch single department
   fetchDepartment(id: number) {
     const token = this.authStore.token();
     if (!token) return;
@@ -59,7 +68,22 @@ export class DepartmentPageComponent implements OnInit {
       });
   }
 
-  // 🔹 Add user to department
+  // Fetch tasks for department
+  fetchTasks(id: number) {
+    const token = this.authStore.token();
+    if (!token) return;
+
+    this.http
+      .get<any[]>(`${environment.apiUrl}/tasks/department/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe({
+        next: (res) => (this.tasks = res),
+        error: (err) => console.error('Failed to fetch tasks:', err),
+      });
+  }
+
+  // Add user
   onAddUser() {
     if (!this.department || this.addUserForm.invalid) return;
 
@@ -84,6 +108,32 @@ export class DepartmentPageComponent implements OnInit {
           this.addUserForm.reset({ role: 'viewer' });
         },
         error: (err) => console.error('Failed to add user:', err),
+      });
+  }
+
+  // Create task
+  onCreateTask() {
+    if (!this.department || this.taskForm.invalid) return;
+
+    const token = this.authStore.token();
+    if (!token) return;
+
+    const payload = {
+      title: this.taskForm.value.title,
+      description: this.taskForm.value.description,
+      departmentId: this.department.id,
+    };
+
+    this.http
+      .post<any>(`${environment.apiUrl}/tasks`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe({
+        next: (task) => {
+          this.tasks.unshift(task);
+          this.taskForm.reset();
+        },
+        error: (err) => console.error('Failed to create task:', err),
       });
   }
 }

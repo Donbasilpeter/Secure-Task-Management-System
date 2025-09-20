@@ -58,4 +58,16 @@ async getDepartment(@Param('id') id: number, @Request() req) {
       userId,
     );
   }
+
+  // departments.controller.ts
+@UseGuards(AuthGuard('jwt'))
+@Get('/:deptId/users')
+async getDepartmentUsers(
+  @Param('deptId') deptId: number,
+  @Request() req: any,
+) {
+  const userId = req.user.id;
+  return this.departmentsService.getDepartmentUsers(Number(deptId), userId);
+}
+
 }

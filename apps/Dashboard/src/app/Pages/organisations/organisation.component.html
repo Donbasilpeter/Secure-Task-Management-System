@@ -1,8 +1,11 @@
-<app-header title="Dashboard"></app-header>
+<!-- Fixed Header -->
+<app-header
+  title="Dashboard"
+  class="fixed top-0 left-0 right-0 z-50 shadow-card"
+></app-header>
 
-<!-- rest of dashboard UI -->
-
-<div class="min-h-screen bg-secondary-dark font-body p-10">
+<!-- Page wrapper with top padding to offset fixed header -->
+<div class="min-h-screen bg-secondary-dark font-body p-10 pt-24 overflow-x-hidden overflow-y-auto">
   <div class="max-w-6xl mx-auto bg-secondary-light rounded-card shadow-card p-10 border border-tertiary/10">
 
     <ng-container *ngIf="organisationStore.currentOrg() as org; else noOrg">
@@ -65,29 +68,28 @@
           </form>
         </div>
 
-<!-- Departments List -->
-<ul class="grid gap-6 sm:grid-cols-2">
-  <li
-    *ngFor="let dept of departmentStore.departments()"
-    class="p-6 bg-secondary rounded-card shadow-card border border-tertiary/10 hover:shadow-md transition flex flex-col justify-between"
-  >
-    <div>
-      <p class="text-lg font-medium text-primary">{{ dept.name }}</p>
-      <p class="text-xs text-tertiary-light/70 mt-2">
-        Role: <span class="font-medium">{{ dept.role }}</span>
-      </p>
-    </div>
-    <div class="mt-4 flex justify-end">
-<button
-  (click)="openDepartment(dept)"
-  class="px-4 py-2 text-sm bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
->
-  Open
-</button>
-    </div>
-  </li>
-</ul>
-
+        <!-- Departments List -->
+        <ul class="grid gap-6 sm:grid-cols-2">
+          <li
+            *ngFor="let dept of departmentStore.departments()"
+            class="p-6 bg-secondary rounded-card shadow-card border border-tertiary/10 hover:shadow-md transition flex flex-col justify-between"
+          >
+            <div>
+              <p class="text-lg font-medium text-primary">{{ dept.name }}</p>
+              <p class="text-xs text-tertiary-light/70 mt-2">
+                Role: <span class="font-medium">{{ dept.role }}</span>
+              </p>
+            </div>
+            <div class="mt-4 flex justify-end">
+              <button
+                (click)="openDepartment(dept)"
+                class="px-4 py-2 text-sm bg-primary text-white rounded-button shadow hover:bg-primary-dark transition"
+              >
+                Open
+              </button>
+            </div>
+          </li>
+        </ul>
       </section>
     </ng-container>
 

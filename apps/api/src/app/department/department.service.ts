@@ -206,7 +206,48 @@ async addUserToDepartment(
   await this.deptUserRepo.save(newDeptUser);
    return { message: 'User added to department successfully' };
 }
+// departments.service.ts
+async getDepartmentUsers(deptId: number, actingUserId: number) {
+  // 1. Load department with organisation
+  const department = await this.deptRepo.findOne({
+    where: { id: deptId },
+    relations: ['organisation'],
+  });
+  if (!department) throw new NotFoundException('Department not found');
 
+  // 2. Check if acting user is org owner or dept admin
+  const orgUser = await this.orgUserRepo.findOne({
+    where: {
+      organisation: { id: department.organisation.id },
+      user: { id: actingUserId },
+    },
+  });
+
+  const deptUser = await this.deptUserRepo.findOne({
+    where: { department: { id: deptId }, user: { id: actingUserId } },
+  });
+
+  const isOwner = orgUser?.role === 'owner';
+  const isDeptAdmin = deptUser?.role === 'admin';
+
+  if (!isOwner && !isDeptAdmin) {
+    throw new ForbiddenException('Not allowed to view department users');
+  }
+
+  // 3. Load all users in this department
+  const deptUsers = await this.deptUserRepo.find({
+    where: { department: { id: deptId } },
+    relations: ['user'], // include user entity
+  });
+
+  // 4. Return mapped response
+  return deptUsers.map((du) => ({
+    id: du.user.id,
+    name: du.user.name,
+    email: du.user.email,
+    role: du.role,
+  }));
+}
 
 
 }
