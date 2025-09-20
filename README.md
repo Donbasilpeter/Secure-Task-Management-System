@@ -1,101 +1,189 @@
-# SecureTaskManagementSystem
+# Secure Task Management System
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+The **Secure Task Management System** is a full-stack application built using a modern **NX monorepo** architecture.  
+It combines a **NestJS backend (API)**, an **Angular frontend (Dashboard)**, and a **PostgreSQL database** running inside Docker.  
+The system enforces **role-based access control (RBAC)** at both the **organization** and **department** levels, ensuring that tasks can only be created, viewed, or modified by authorized users based on their role.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+This project demonstrates **enterprise-level security patterns** (authentication, RBAC, modular architecture, audit logging) combined with a **modern, responsive frontend**.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+---
 
-## Run tasks
+## 📌 Project Structure
 
-To run the dev server for your app, use:
+The repository follows the NX monorepo approach, which allows managing multiple apps and shared libraries under one workspace:
 
-```sh
-npx nx serve Dashboard
+```
+apps/
+  api/            → NestJS backend (JWT Auth, RBAC, REST API)
+  dashboard/      → Angular frontend (Task dashboard, TailwindCSS)
+libs/
+  data/           → Shared DTOs & TypeScript interfaces
+  auth/           → Reusable RBAC decorators, guards, and JWT strategy
 ```
 
-To create a production bundle:
+- **apps/api** → Provides RESTful API endpoints for authentication, organizations, departments, tasks, and comments. It includes RBAC guards and audit logging.  
+- **apps/dashboard** → A responsive Angular web app styled with TailwindCSS. It connects to the API, provides login, and allows users to interact with tasks and departments based on their role.  
+- **libs/data** → Stores common DTOs (Data Transfer Objects) and TypeScript interfaces. Both backend and frontend use this library to remain consistent and type-safe.  
+- **libs/auth** → Encapsulates the RBAC system. It contains JWT authentication logic and guards that enforce access rules.  
 
-```sh
-npx nx build Dashboard
+This structure keeps the system modular: security is reusable, data models are shared, and each app is isolated but consistent.
+
+---
+
+## 🗂 Data Models
+
+The system revolves around a **multi-level organizational structure**:
+
+- **User** → The individual interacting with the system. A user can belong to multiple organizations and departments.  
+- **Organization** → The top-level grouping. Each organization contains multiple departments and has an owner who controls access.  
+- **Department** → A subdivision within an organization. Each department can have its own users and tasks.  
+- **Task** → The main resource. Tasks belong to departments, and access to them depends on the user’s role.  
+- **TaskComment** → A comment left on a task. Visibility and permissions depend on the user’s role.  
+- **OrganisationUser / DepartmentUser** → These join tables define *what role a user has in a given organization or department*.  
+
+### Roles
+- **Owner** → Has the highest authority within an organization. Can manage users, departments, tasks and task comments.  
+- **Admin** → Manages tasks and department members. Has elevated rights but cannot override the organization owner.  
+- **Viewer** → Read-only access. Can see tasks and comments but cannot create or modify them.  
+
+### Role Inheritance
+The roles follow a **hierarchy**:
+```
+Owner > Admin > Viewer
+```
+An **Owner** inherits all permissions of Admins and Viewers as well us complete access to org.  
+An **Admin** inherits Viewer permissions as well as complete access to department.  
+A **Viewer** can only observe.  
+
+This inheritance simplifies access control: higher-level roles automatically gain lower-level permissions.
+
+---
+
+## 🔑 Authentication & Access Control
+
+The system uses **JWT (JSON Web Tokens)** for authentication.  
+
+1. A user logs in with their credentials.  
+2. The API returns a signed JWT, which contains the user’s ID and role assignments.  
+3. All subsequent requests must include this token in the `Authorization: Bearer <token>` header.  
+4. NestJS  check whether the user has the correct role and belongs to the relevant organization/department before allowing access.  
+
+
+---
+
+## 📡 API Endpoints
+
+
+
+---
+
+## 🖥️ Frontend (Angular + TailwindCSS)
+
+The frontend provides a **user-friendly dashboard** for interacting with the system.
+
+### Key Features
+- **Authentication UI** → A login page where users enter credentials. On success, the JWT is stored in localStorage and attached to API requests.  
+- **Organization and Department Pages** → Displays the hierarchy and role assignments. The UI adapts to the user’s role, hiding actions they cannot perform.  
+- **Task Management** → Users can create, delete, or view tasks depending on permissions. Tasks are displayed in categories (e.g., Work, Personal).  
+- **Task Comments** → A modal allows users to view or add comments to a task. Permissions control whether they can add or only view.  
+- **Responsive Layout** → Built with TailwindCSS, ensuring the UI looks good on mobile, tablet, and desktop.  
+
+By combining **Angular Signals/Store** for state management and Tailwind for styling, the dashboard is responsive, efficient, and visually appealing.
+
+---
+
+## ⚙️ Setup & Run
+
+### 1️⃣ Prerequisites
+- Install **Node.js 20+**  
+- Install **Nx CLI** (`npx install -g nx`)  
+- Install **Docker & Docker Compose**  
+
+---
+
+### 2️⃣ Start Database with Docker Compose
+
+The project includes a `docker-compose.yml` file that sets up **Postgres** and **pgAdmin**.  
+Start the services with:
+
+```bash
+docker-compose up -d
 ```
 
-To see all available targets to run for a project, run:
+- **Postgres** → Runs on `localhost:5432`  
+- **pgAdmin** → Access via [http://localhost:5050](http://localhost:5050)  
+  - Default login: `admin@admin.com / admin`  
+  - Add a new server using `postgres` as the host.  
 
-```sh
-npx nx show project Dashboard
+---
+
+### 3️⃣ Configure Environment Variables
+
+In the root folder, rename the sample.env file  to  .env
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASS=postgres
+DB_NAME=taskdb
+JWT_SECRET=ada46f80394a5bc26bff630db800d9f6
+JWT_EXPIRES=3600s
+APP_URL = http://localhost:4200
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+---
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 4️⃣ Install Dependencies & Run Apps
 
-## Add new projects
+```bash
+# Install all dependencies
+npm install
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+# Run backend (NestJS API)
+nx serve api
 
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/angular:app demo
+# Run frontend (Angular Dashboard)
+nx serve dashboard
 ```
 
-To generate a new library, use:
+The backend will connect to Postgres, and the frontend will be accessible via `http://localhost:4200`.
 
-```sh
-npx nx g @nx/angular:lib mylib
-```
+---
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 📖 Architecture Overview
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+The system is built with **scalability and security** in mind:
 
-## Set up CI!
+- **NX Monorepo** → A single workspace with isolated apps and shared libraries.  
+- **Separation of Concerns** → Backend (API), frontend (Dashboard), and shared libs (`auth`, `data`).  
+- **RBAC Implementation** → Role based access to different endpoints.  
+- **Shared Data Contracts** → DTOs/interfaces in `libs/data` ensure backend and frontend stay in sync.  
+- **Modular Design** → New roles, permissions, or modules can be added with minimal impact on existing code.  
+This approach ensures clean code separation, easy maintainability, and readiness for production environments.
 
-### Step 1
 
-To connect to Nx Cloud, run the following command:
+### ER Diagram 
 
-```sh
-npx nx connect
-```
+![ER Diagram](./docs/er-diagram.png)
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+---
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🚀 Future Enhancements
 
-### Step 2
+The system already covers core security and task management features, but can be extended with:
 
-Use the following command to configure a CI workflow for your workspace:
+- **Caching Permission Checks** → Improving performance under heavy load.  
+- **GraphQL API** → Offering more flexible queries for frontend clients.  
+- **Multi-Factor Authentication (MFA)** → Add an extra layer of login security using email, SMS, or authenticator apps.  
+- **Advanced Role Delegation** → Allow Owners to define custom roles and permissions beyond Owner/Admin/Viewer.  
+- **Task Dependencies** → Prevent certain tasks from starting until prerequisite tasks are complete.  
+- **File Attachments** → Allow uploading and managing files within tasks.  
 
-```sh
-npx nx g ci-workflow
-```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## Install Nx Console
+---
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+## 📜 License
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+MIT License © 2025 — Secure Task Management System  
