@@ -17,18 +17,18 @@ export interface OrganisationUser {
 
 @Injectable({ providedIn: 'root' })
 export class OrganisationStore {
-  // 🔹 State
+  //  State
   private _organisations = signal<Organisation[]>([]);
   private _currentOrg = signal<Organisation | null>(null);
   private _users = signal<OrganisationUser[]>([]); // NEW
 
-  // 🔹 Public readonly signals
+  //  Public readonly signals
   readonly organisations = this._organisations.asReadonly();
   readonly orgCount = computed(() => this._organisations().length);
   readonly currentOrg = this._currentOrg.asReadonly();
   readonly users = this._users.asReadonly(); // NEW
 
-  // 🔹 Mutators
+  //  Mutators
   setOrganisations(orgs: Organisation[]) {
     this._organisations.set(orgs);
   }
@@ -43,12 +43,12 @@ export class OrganisationStore {
     this._users.set([]); // clear users too
   }
 
-  // 🔹 Current organisation
+  //  Current organisation
   setCurrentOrg(org: Organisation | null) {
     this._currentOrg.set(org);
   }
 
-  // 🔹 Users
+  //  Users
   setUsers(users: OrganisationUser[]) {
     this._users.set(users);
   }

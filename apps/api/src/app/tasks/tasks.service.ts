@@ -65,7 +65,6 @@ async createTask(dto: CreateTaskDto, userId: number): Promise<Task> {
 }
 
 
-// apps/api/src/app/tasks/tasks.service.ts
 async findTasksByDepartment(deptId: number, userId: number): Promise<Task[]> {
   const department = await this.deptRepo.findOne({ where: { id: deptId } });
   if (!department) throw new NotFoundException('Department not found');

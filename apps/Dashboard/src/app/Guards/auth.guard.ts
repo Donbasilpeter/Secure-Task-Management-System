@@ -8,7 +8,7 @@ export class AuthGuard {
   private router = inject(Router);
 
   canActivate(): boolean {
-    if (!this.authStore.isAuthenticated()) {   // 👈 must call it!
+    if (!this.authStore.isAuthenticated()) {   
       this.router.navigate(['/landing']);
       return false;
     }

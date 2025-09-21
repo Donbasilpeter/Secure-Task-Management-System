@@ -19,16 +19,16 @@ export class DepartmentStore {
   private _departments = signal<Department[]>([]);
   private _currentDepartment = signal<Department | null>(null);
 
-  // 🔹 NEW: users of the current department
+  //  NEW: users of the current department
   private _users = signal<DepartmentUser[]>([]);
 
-  // 🔹 Public readonly signals
+  //  Public readonly signals
   readonly departments = this._departments.asReadonly();
   readonly count = computed(() => this._departments().length);
   readonly currentDepartment = this._currentDepartment.asReadonly();
   readonly users = this._users.asReadonly(); // NEW
 
-  // 🔹 Mutators for departments
+  //  Mutators for departments
   setDepartments(depts: Department[]) {
     this._departments.set(depts);
   }
@@ -47,7 +47,7 @@ export class DepartmentStore {
     this._currentDepartment.set(dept);
   }
 
-  // 🔹 NEW: Mutators for users
+  //  NEW: Mutators for users
   setUsers(users: DepartmentUser[]) {
     this._users.set(users);
   }

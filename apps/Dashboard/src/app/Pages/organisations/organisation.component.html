@@ -22,7 +22,7 @@
         </p>
       </header>
 
-        <!-- 🔹 Organisation Users (Owner only) -->
+        <!-- Organisation Users (Owner only) -->
   <section *ngIf="org.role === 'owner'" class="mb-10">
     <h2 class="text-2xl font-heading font-semibold text-tertiary mb-4">Organisation Users</h2>
     <div *ngIf="organisationStore.users().length > 0; else noUsers">

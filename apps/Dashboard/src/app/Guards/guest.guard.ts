@@ -8,7 +8,7 @@ export class GuestGuard {
   private router = inject(Router);
 
   canActivate(): boolean {
-    if (this.authStore.isAuthenticated()) {   // 👈 must call it!
+    if (this.authStore.isAuthenticated()) {   
       this.router.navigate(['/dashboard']);
       return false;
     }

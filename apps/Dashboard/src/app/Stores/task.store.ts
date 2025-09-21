@@ -15,12 +15,12 @@ export class TaskStore {
   private _tasks = signal<Task[]>([]);
   private _currentTask = signal<Task | null>(null);
 
-  // 🔹 Public signals
+  //  Public signals
   readonly tasks = this._tasks.asReadonly();
   readonly count = computed(() => this._tasks().length);
   readonly currentTask = this._currentTask.asReadonly();
 
-  // 🔹 Mutators
+  //  Mutators
   setTasks(tasks: Task[]) {
     this._tasks.set(tasks);
   }

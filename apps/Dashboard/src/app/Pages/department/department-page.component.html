@@ -9,7 +9,7 @@
   <div class="max-w-5xl mx-auto bg-secondary-light rounded-card shadow-card p-10 border border-tertiary/10">
     <ng-container *ngIf="department; else notFound">
       
-      <!-- 🔹 Department Header -->
+      <!--  Department Header -->
       <header class="mb-10 border-b pb-6 flex justify-between items-center">
         <div>
           <h1 class="text-4xl font-heading font-bold text-primary mb-2">
@@ -22,7 +22,7 @@
           </div>
         </div>
 
-        <!-- 🔹 Action buttons -->
+        <!--  Action buttons -->
         <ng-container *ngIf="department.role === 'admin' || department.role === 'owner'">
           <div class="flex gap-3">
             <button
@@ -41,7 +41,7 @@
         </ng-container>
       </header>
 
-      <!-- 🔹 Task List -->
+      <!--  Task List -->
       <section>
         <h2 class="text-2xl font-heading font-semibold text-primary mb-4">Tasks</h2>
 
@@ -63,7 +63,7 @@
     <span class="font-medium">Assigned to:</span> {{ task.assignedTo?.name || 'Unassigned' }}
   </p>
 
-  <!-- 🔹 Actions -->
+  <!--  Actions -->
   <div class="flex justify-end gap-3 mt-3">
     <button (click)="onOpenTask(task)"
             class="px-4 py-1 bg-primary text-white text-sm rounded-button shadow hover:bg-primary-dark">
@@ -97,14 +97,14 @@
   </div>
 </div>
 
-<!-- 🔹 Manage Users Modal -->
+<!--  Manage Users Modal -->
 <div *ngIf="showUserModal" class="fixed inset-0 bg-tertiary/70 flex items-center justify-center z-50 overflow-hidden">
   <div class="bg-secondary-light rounded-card shadow-card w-full max-w-lg max-h-screen overflow-auto p-6 relative">
     <button (click)="showUserModal = false" 
             class="absolute top-3 right-3 text-gray-400 hover:text-tertiary">✕</button>
     <h2 class="text-xl font-heading font-semibold text-primary mb-4">Manage Users</h2>
 
-    <!-- 🔹 Users List -->
+    <!--  Users List -->
     <div *ngIf="departmentStore.users().length > 0; else noUsers" class="mb-6">
       <ul class="divide-y divide-gray-200 border rounded-card bg-secondary-dark max-h-64 overflow-y-auto">
         <li *ngFor="let u of departmentStore.users()" class="flex justify-between items-center px-4 py-3">
@@ -122,7 +122,7 @@
       </div>
     </ng-template>
 
-    <!-- 🔹 Add User Form -->
+    <!-- Add User Form -->
     <form [formGroup]="addUserForm" (ngSubmit)="onAddUser()" class="space-y-4">
       <div>
         <label class="block text-sm font-medium text-tertiary mb-1">User Email</label>
@@ -149,7 +149,7 @@
   </div>
 </div>
 
-<!-- 🔹 Create Task Modal -->
+<!-- Create Task Modal -->
 <div *ngIf="showTaskModal" class="fixed inset-0 bg-tertiary/70 flex items-center justify-center z-50 overflow-hidden">
   <div class="bg-secondary-light rounded-card shadow-card w-full max-w-lg max-h-screen overflow-auto p-6 relative">
     <button (click)="showTaskModal = false" 
@@ -169,7 +169,7 @@
                   placeholder="Enter task description"></textarea>
       </div>
 
-      <!-- 🔹 Assignee Dropdown -->
+      <!-- Assignee Dropdown -->
       <div>
         <label class="block text-sm font-medium text-tertiary mb-1">Assign To</label>
         <select formControlName="assignedToId"
@@ -194,7 +194,7 @@
   </div>
 </div>
 
-<!-- 🔹 Task Comments Modal -->
+<!-- Task Comments Modal -->
 <div *ngIf="showCommentsModal" class="fixed inset-0 bg-tertiary/70 flex items-center justify-center z-50 overflow-hidden">
   <div class="bg-secondary-light rounded-card shadow-card w-full max-w-2xl max-h-screen overflow-auto p-6 relative">
     <button (click)="showCommentsModal = false"
@@ -204,7 +204,7 @@
       Comments for {{ selectedTask?.title }}
     </h2>
 
-    <!-- 🔹 Comments List -->
+    <!-- Comments List -->
     <div *ngIf="comments.length > 0; else noComments" class="space-y-4 mb-6">
       <div *ngFor="let c of comments" class="p-4 bg-secondary-dark rounded-card border">
         <p class="text-sm text-gray-700">{{ c.comment }}</p>
@@ -217,7 +217,7 @@
       <p class="text-gray-500 text-center">No comments yet.</p>
     </ng-template>
 
-    <!-- 🔹 Add Comment Form (if permission) -->
+    <!--  Add Comment Form (if permission) -->
     <form *ngIf="department?.role === 'admin' || department?.role === 'owner' || selectedTask?.assignedTo?.id === authStore.user()?.id"
           [formGroup]="commentForm"
           (ngSubmit)="onAddComment()"

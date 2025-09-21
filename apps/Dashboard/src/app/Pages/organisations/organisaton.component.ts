@@ -74,7 +74,7 @@ export class OrganisationPageComponent implements OnInit {
       });
   }
 
-  // 🔹 Load all departments
+  //  Load all departments
   loadDepartments(orgId: number) {
     const token = this.authStore.token();
     if (!token) return;
@@ -89,7 +89,7 @@ export class OrganisationPageComponent implements OnInit {
       });
   }
 
-  // 🔹 Load organisation users (owner only)
+  //  Load organisation users (owner only)
   loadUsers(orgId: number) {
     const token = this.authStore.token();
     if (!token) return;
@@ -104,7 +104,7 @@ export class OrganisationPageComponent implements OnInit {
       });
   }
 
-  // 🔹 Create department
+  // Create department
   onCreateDepartment() {
     if (this.deptForm.invalid) return;
 
