@@ -8,7 +8,7 @@ This project demonstrates **enterprise-level security patterns** (authentication
 
 ---
 
-## 📌 Project Structure
+## Project Structure
 
 The repository follows the NX monorepo approach, which allows managing multiple apps and shared libraries under one workspace:
 
@@ -30,7 +30,7 @@ This structure keeps the system modular: security is reusable, data models are s
 
 ---
 
-## 🗂 Data Models
+## Data Models
 
 The system revolves around a **multi-level organizational structure**:
 
@@ -59,7 +59,7 @@ This inheritance simplifies access control: higher-level roles automatically gai
 
 ---
 
-## 🔑 Authentication & Access Control
+## Authentication & Access Control
 
 The system uses **JWT (JSON Web Tokens)** for authentication.  
 
@@ -72,9 +72,9 @@ The system uses **JWT (JSON Web Tokens)** for authentication.
 ---
 
 
-## 📡 API Documentation
+## API Documentation
 
-### 🔐 Authentication
+### Authentication
 
 **Login**  
 `POST http://localhost:3000/api/users/login`  
@@ -101,7 +101,7 @@ The system uses **JWT (JSON Web Tokens)** for authentication.
 
 ---
 
-### 🏢 Organisations
+### Organisations
 
 **Create Organisation**  
 `POST http://localhost:3000/api/organisations`  
@@ -125,7 +125,7 @@ The system uses **JWT (JSON Web Tokens)** for authentication.
 
 ---
 
-### 🗂 Departments
+### Departments
 
 **Create Department**  
 `POST http://localhost:3000/api/departments`  
@@ -149,7 +149,7 @@ The system uses **JWT (JSON Web Tokens)** for authentication.
 
 ---
 
-## 🖥️ Frontend (Angular + TailwindCSS)
+## Frontend (Angular + TailwindCSS)
 
 The frontend provides a **user-friendly dashboard** for interacting with the system.
 
@@ -164,16 +164,16 @@ By combining **Angular Signals/Store** for state management and Tailwind for sty
 
 ---
 
-## ⚙️ Setup & Run
+## Setup & Run
 
-### 1️⃣ Prerequisites
+### Prerequisites
 - Install **Node.js 20+**  
 - Install **Nx CLI** (`npx install -g nx`)  
 - Install **Docker & Docker Compose**  
 
 ---
 
-### 2️⃣ Start Database with Docker Compose
+### Start Database with Docker Compose
 
 The project includes a `docker-compose.yml` file that sets up **Postgres** and **pgAdmin**.  
 Start the services with:
@@ -188,7 +188,7 @@ docker-compose up -d
 
 ---
 
-### 3️⃣ Configure Environment Variables
+### Configure Environment Variables
 
 In the root folder, rename the sample.env file  to  .env
 
@@ -205,7 +205,7 @@ APP_URL = http://localhost:4200
 
 ---
 
-### 4️⃣ Install Dependencies & Run Apps
+### Install Dependencies & Run Apps
 
 ```bash
 # Install all dependencies
@@ -222,7 +222,7 @@ The backend will connect to Postgres, and the frontend will be accessible via `h
 
 ---
 
-## 📖 Architecture Overview
+## Architecture Overview
 
 The system is built with **scalability and security** in mind:
 
@@ -240,7 +240,7 @@ This approach ensures clean code separation, easy maintainability, and readiness
 
 ---
 
-## 🚀 Future Enhancements
+## Future Enhancements
 
 The system already covers core security and task management features, but can be extended with:
 
@@ -255,6 +255,6 @@ The system already covers core security and task management features, but can be
 
 ---
 
-## 📜 License
+## License
 
 MIT License © 2025 — Secure Task Management System  
