@@ -149,7 +149,7 @@ The system uses **JWT (JSON Web Tokens)** for authentication.
 
 ---
 
-## Frontend (Angular + TailwindCSS)
+## Frontend (Angular + TailwindCSS + NgRx Signals)
 
 The frontend provides a **user-friendly dashboard** for interacting with the system.
 
@@ -160,7 +160,7 @@ The frontend provides a **user-friendly dashboard** for interacting with the sys
 - **Task Comments** → A modal allows users to view or add comments to a task. Permissions control whether they can add or only view.  
 - **Responsive Layout** → Built with TailwindCSS, ensuring the UI looks good on mobile, tablet, and desktop.  
 
-By combining **Angular Signals/Store** for state management and Tailwind for styling, the dashboard is responsive, efficient, and visually appealing.
+By combining **ngrx Signals/Store** for state management and Tailwind for styling, the dashboard is responsive, efficient, and visually appealing.
 
 ---
 
