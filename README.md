@@ -164,6 +164,16 @@ By combining **Angular Signals/Store** for state management and Tailwind for sty
 
 ---
 
+## Backend (NestJS + Docker + PostgreSQL + pgAdmin)
+
+- **NestJS** → A TypeScript-based framework that powers the backend with modular architecture, dependency injection, and decorators.  
+- **TypeORM** → Provides object-relational mapping to PostgreSQL.  
+- **PostgreSQL (Dockerized)** → Reliable relational database.  
+- **pgAdmin (Dockerized)** → Browser-based database management UI for inspecting schemas and records.  
+- **Docker Compose** → Orchestrates services (`api`, `postgres`, `pgAdmin`) for smooth local development.  
+
+---
+
 ## Setup & Run
 
 ### Prerequisites
